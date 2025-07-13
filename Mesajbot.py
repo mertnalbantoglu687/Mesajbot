@@ -120,7 +120,6 @@ async def on_message(message):
             await message.add_reaction("👍🏻")
 
     elif re.search(r"\s*s\s*ö\s*y\s*l\s*e\s*", cleaned_content, re.IGNORECASE):
-        
         begenme = random.randint(1, 2)
         if begenme == 1:
             await message.add_reaction("👍🏻")
@@ -155,11 +154,9 @@ async def basla(ctx):
                 await ctx.send(f"Yanlış bildin.")
     else:
         await ctx.send(f"Geçersiz seçenek, lütfen 'yazı' veya 'tura' yazın.")
-@bot.event
-async def on_member_join(member):
-    for channel in member.guild.text_channels:
-        if channel.permissions_for(member.guild.me).send_messages:
-            await channel.send(f'Hoş geldiniz, {member.mention}! 🎉')
-            break  # İlk mesaj atılabilir kanalda yaz, sonra çık
+@bot.command(name="çıkar")
+async def cikar(ctx, num1: float, num2: float):
+    sonuc = num1 - num2
+    await ctx.send(f"{num1} - {num2} = {sonuc}")
 
 bot.run(TOKEN)

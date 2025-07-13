@@ -155,5 +155,11 @@ async def basla(ctx):
                 await ctx.send(f"Yanlış bildin.")
     else:
         await ctx.send(f"Geçersiz seçenek, lütfen 'yazı' veya 'tura' yazın.")
+@bot.event
+async def on_member_join(member):
+    for channel in member.guild.text_channels:
+        if channel.permissions_for(member.guild.me).send_messages:
+            await channel.send(f'Hoş geldiniz, {member.mention}! 🎉')
+            break  # İlk mesaj atılabilir kanalda yaz, sonra çık
 
 bot.run(TOKEN)

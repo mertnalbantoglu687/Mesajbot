@@ -156,18 +156,4 @@ async def basla(ctx):
     else:
         await ctx.send(f"Geçersiz seçenek, lütfen 'yazı' veya 'tura' yazın.")
 
-@bot.command()
-async def check(ctx):
-    if ctx.message.attachments:
-        for attachment in ctx.message.attachments:
-            file_name = attachment.filename
-            file_path = os.path.join(IMAGE_DIR, file_name)
-            try:
-                await attachment.save(file_path)
-                await ctx.send(f"Görsel başarıyla kaydedildi: `{file_path}`")
-            except Exception as e:
-                await ctx.send(f"Görsel kaydedilirken bir hata oldu. {str(e)}")
-    else:
-        await ctx.send("Görsel yüklemedin.")
-
 bot.run(TOKEN)

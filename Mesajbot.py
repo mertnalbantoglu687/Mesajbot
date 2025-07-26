@@ -1,5 +1,6 @@
 from discord.ext import commands,tasks
 from Mantık import *
+from logic import *
 import discord
 import random
 import asyncio
@@ -154,9 +155,15 @@ async def basla(ctx):
                 await ctx.send(f"Yanlış bildin.")
     else:
         await ctx.send(f"Geçersiz seçenek, lütfen 'yazı' veya 'tura' yazın.")
-@bot.command(name="çıkar")
-async def cikar(ctx, num1: float, num2: float):
-    sonuc = num1 - num2
-    await ctx.send(f"{num1} - {num2} = {sonuc}")
+@bot.command("go")
+async def go(ctx):
+    author = ctx.author.name
+    if author not in resim.resimler.keys():
+        resim = resim(author)
+        resim.resimler[author] = resim
+        if img_url:
+            embed = discord.Embed()
+            embed.set_image(url=img_url)
+            await ctx.send(embed=embed)
 
 bot.run(TOKEN)

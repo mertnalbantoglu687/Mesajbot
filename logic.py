@@ -19,3 +19,5 @@ class resim:
                     img_url = data["sprites"]["front_defauld"]
                     return img_url
                 return None
+    async def info(self):
+        return "isim"

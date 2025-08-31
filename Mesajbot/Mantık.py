@@ -14,7 +14,7 @@ from translate import Translator
 
 from collections import defaultdict
 
-def Parola_Belirle(pass_length):
+def Parola_Gönder(pass_length):
     karakterler = "é!'£^#+$%½&/=?\*_-@¨¨~~æß´`,;<>.:AaBbCcÇçDdEeFfGgĞğHhIıİiJjKkLlMmNnOoÖöPpQqRrSsŞşTtUuÜüVvWwXxYyZz1234567890"
     parola = ""
     for a in range(pass_length):
@@ -116,4 +116,5 @@ class Metin_Analizi:
             translator = Translator(from_lang=from_lang, to_lang=to_lang)
             return translator.translate(text)
         except:
+
             return "Mesajınız anlaşılamadı."

@@ -110,7 +110,7 @@ async def on_message(message):
             await message.add_reaction("👍🏻")
 
     elif re.search(r"\s*(p+a+r+o+l+a|s+i+f+r+e|ş+i+f+r+e)(\s*(a+t|b+e+l+i+r+l+e|g+ö+n+d+e+r|y+o+l+l+a))?\s*(\?*)\s*", cleaned_content):
-        await message.channel.send(Parola_Belirle(25))
+        await message.channel.send(Parola_Gönder(25))
         if random.randint(1, 2) == 1:
             await message.add_reaction("👍🏻")
 
@@ -146,5 +146,6 @@ class Düğme_Görünümleri(discord.ui.View):
     async def Arapçaya_Çevirme(self, button: discord.ui.Button, interaction: discord.Interaction):
         obj = Metin_Analizi.memory[self.owner][-1]
         await interaction.response.send_message(obj.translation_ar, ephemeral=True)
+
 
 bot.run(TOKEN)

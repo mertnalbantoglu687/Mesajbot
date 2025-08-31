@@ -116,5 +116,81 @@ class Metin_Analizi:
             translator = Translator(from_lang=from_lang, to_lang=to_lang)
             return translator.translate(text)
         except:
-
             return "Mesajınız anlaşılamadı."
+
+class Hesap_Makinesi(discord.ui.View):
+    def __init__(self):
+        super().__init__(timeout=None)
+        self.input_text = ""
+
+    async def Yazı(self, interaction: discord.Interaction):
+        content_to_send = f"```{self.input_text}```" if self.input_text else ""
+        await interaction.response.edit_message(content=content_to_send, view=self)
+
+    @discord.ui.button(label="1", style=discord.ButtonStyle.primary, row=0)
+    async def Bir(self, button, interaction: discord.Interaction):
+        self.input_text += "1"; await self.Yazı(interaction)
+
+    @discord.ui.button(label="2", style=discord.ButtonStyle.primary, row=0)
+    async def İki(self, button, interaction: discord.Interaction):
+        self.input_text += "2"; await self.Yazı(interaction)
+
+    @discord.ui.button(label="3", style=discord.ButtonStyle.primary, row=0)
+    async def Üç(self, button, interaction: discord.Interaction):
+        self.input_text += "3"; await self.Yazı(interaction)
+
+    @discord.ui.button(label="+", style=discord.ButtonStyle.success, row=0)
+    async def Artı(self, button, interaction: discord.Interaction):
+        self.input_text += "+"; await self.Yazı(interaction)
+
+    @discord.ui.button(label="4", style=discord.ButtonStyle.primary, row=1)
+    async def Dört(self, button, interaction: discord.Interaction):
+        self.input_text += "4"; await self.Yazı(interaction)
+
+    @discord.ui.button(label="5", style=discord.ButtonStyle.primary, row=1)
+    async def Beş(self, button, interaction: discord.Interaction):
+        self.input_text += "5"; await self.Yazı(interaction)
+
+    @discord.ui.button(label="6", style=discord.ButtonStyle.primary, row=1)
+    async def Altı(self, button, interaction: discord.Interaction):
+        self.input_text += "6"; await self.Yazı(interaction)
+
+    @discord.ui.button(label="-", style=discord.ButtonStyle.success, row=1)
+    async def Eksi(self, button, interaction: discord.Interaction):
+        self.input_text += "-"; await self.Yazı(interaction)
+
+    @discord.ui.button(label="7", style=discord.ButtonStyle.primary, row=2)
+    async def Yedi(self, button, interaction: discord.Interaction):
+        self.input_text += "7"; await self.Yazı(interaction)
+
+    @discord.ui.button(label="8", style=discord.ButtonStyle.primary, row=2)
+    async def Sekiz(self, button, interaction: discord.Interaction):
+        self.input_text += "8"; await self.Yazı(interaction)
+
+    @discord.ui.button(label="9", style=discord.ButtonStyle.primary, row=2)
+    async def Dokuz(self, button, interaction: discord.Interaction):
+        self.input_text += "9"; await self.Yazı(interaction)
+
+    @discord.ui.button(label="x", style=discord.ButtonStyle.success, row=2)
+    async def Çarpı(self, button, interaction: discord.Interaction):
+        self.input_text += "*"; await self.Yazı(interaction)
+
+    @discord.ui.button(label="Sıfırla", style=discord.ButtonStyle.danger, row=3)
+    async def Sıfırla(self, button, interaction: discord.Interaction):
+        self.input_text = ""; await self.Yazı(interaction)
+
+    @discord.ui.button(label="0", style=discord.ButtonStyle.primary, row=3)
+    async def Sıfır(self, button, interaction: discord.Interaction):
+        self.input_text += "0"; await self.Yazı(interaction)
+
+    @discord.ui.button(label="=", style=discord.ButtonStyle.primary, row=3)
+    async def Eşittir(self, button, interaction: discord.Interaction):
+        try:
+            self.input_text = str(eval(self.input_text))
+        except:
+            self.input_text = "Mesajınız Anlaşılamadı."
+        await self.Yazı(interaction)
+
+    @discord.ui.button(label="÷", style=discord.ButtonStyle.success, row=3)
+    async def Bölü(self, button, interaction: discord.Interaction):
+        self.input_text += "/"; await self.Yazı(interaction)

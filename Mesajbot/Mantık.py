@@ -33,15 +33,15 @@ class Sorular:
         self.secenekler = secenekler
 
     def Düğmeler(self):
-        buttons = []
-        for i, secenek in enumerate(self.secenekler):
+        düğmeler = []
+        for a, secenek in enumerate(self.secenekler):
             button = discord.ui.Button(
                 label=secenek,
                 style=discord.ButtonStyle.primary,
-                custom_id=f"answer_{i}"
+                custom_id=f"answer_{a}"
             )
-            buttons.append(button)
-        return buttons
+            düğmeler.append(button)
+        return düğmeler
 
 sorular = [
     # Fen Bilimleri İle İlgili Sorular

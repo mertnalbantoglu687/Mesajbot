@@ -196,6 +196,107 @@ async def on_message(message):
         if random.randint(1, 2) == 1:
             await message.add_reaction("👍🏻")
 
+    elif re.fullmatch(r"\s*(bu\s+yılın\s+kaçıncı\s+haftasındayız|yılın\s+kaçıncı\s+haftasındayız)\s*\?*\s*", cleaned_content, re.IGNORECASE):
+        şimdi = datetime.now(pytz.timezone("Europe/Istanbul"))
+        hafta = şimdi.isocalendar()[1]
+        await message.channel.send(f"Yılın {hafta}. haftasındayız.")
+        if random.randint(1, 2) == 1:
+            await message.add_reaction("👍🏻")
+
+    elif re.fullmatch(r"\s*(bu\s+yılın\s+kaçıncı\s+ayındayız|yılın\s+kaçıncı\s+ayındayız)\s*\?*\s*", cleaned_content, re.IGNORECASE):
+        şimdi = datetime.now(pytz.timezone("Europe/Istanbul"))
+        ay = şimdi.month
+        await message.channel.send(f"Yılın {ay}. ayındayız.")
+        if random.randint(1, 2) == 1:
+            await message.add_reaction("👍🏻")
+
+    elif re.fullmatch(r"\s*(yılın\s+kaçıncı\s+mevsimindeyiz|bu\s+yılın\s+kaçıncı\s+mevsimindeyiz)\s*\?*\s*", cleaned_content, re.IGNORECASE):
+        şimdi = datetime.now(pytz.timezone("Europe/Istanbul"))
+        ay_numarası = şimdi.month
+
+        if ay_numarası in [3, 4, 5]:
+            mevsim = 1
+        elif ay_numarası in [6, 7, 8]:
+            mevsim = 2
+        elif ay_numarası in [9, 10, 11]:
+            mevsim = 3
+        elif ay_numarası in [12, 1, 2]:
+            mevsim = 4
+
+        await message.channel.send(f"Yılın {mevsim}. mevsimindeyiz.")
+        if random.randint(1, 2) == 1:
+            await message.add_reaction("👍🏻")
+
+    elif re.search(r"\s*(bugün\s+mevsimin\s+kaçıncı\s+günü|mevsimin\s+kaçıncı\s+günü|bu\s+mevsimin\s+kaçıncı\s+günündeyiz|mevsimin\s+kaçıncı\s+günündeyiz)\s*\?*\s*", cleaned_content, re.IGNORECASE):
+        şimdi = datetime.now(pytz.timezone("Europe/Istanbul"))
+        ay = şimdi.month
+        gün = şimdi.day
+
+        if ay in [3, 4, 5]:
+            mevsim_numarası = 1
+            mevsim_ayları = [3, 4, 5]
+        elif ay in [6, 7, 8]:
+            mevsim_numarası = 2
+            mevsim_ayları = [6, 7, 8]
+        elif ay in [9, 10, 11]:
+            mevsim_numarası = 3
+            mevsim_ayları = [9, 10, 11]
+        elif ay in [12, 1, 2]:
+            mevsim_numarası = 4
+            mevsim_ayları = [12, 1, 2]
+
+        mevsim_günü = (datetime(şimdi.year, ay, gün) - datetime(şimdi.year, mevsim_ayları[0], 1)).days + 1
+
+        await message.channel.send(f"Bu mevsimin {mevsim_günü}. günündeyiz.")
+        if random.randint(1, 2) == 1:
+            await message.add_reaction("👍🏻")
+
+    elif re.fullmatch(r"\s*(bu\s+mevsimin\s+kaçıncı\s+haftasındayız|mevsimin\s+kaçıncı\s+haftasındayız)\s*\?*\s*", cleaned_content, re.IGNORECASE):
+        şimdi = datetime.now(pytz.timezone("Europe/Istanbul"))
+        ay_numarası = şimdi.month
+        gün_numarası = şimdi.day
+
+        if ay_numarası in [12, 1, 2]:
+            mevsim = "Kış"
+            başlangıç_ay = 12
+        elif ay_numarası in [3, 4, 5]:
+            mevsim = "İlkbahar"
+            başlangıç_ay = 3
+        elif ay_numarası in [6, 7, 8]:
+            mevsim = "Yaz"
+            başlangıç_ay = 6
+        elif ay_numarası in [9, 10, 11]:
+            mevsim = "Sonbahar"
+            başlangıç_ay = 9
+
+        mevsim_başlangıcı = datetime(şimdi.year, başlangıç_ay, 1, tzinfo=pytz.timezone("Europe/Istanbul"))
+        hafta_numarası = ((şimdi - mevsim_başlangıcı).days // 7) + 1
+
+        await message.channel.send(f"Bu mevsiminin {hafta_numarası}. haftasındayız.")
+        if random.randint(1, 2) == 1:
+            await message.add_reaction("👍🏻")
+
+    elif re.fullmatch(r"\s*(bu\s+mevsimin\s+kaçıncı\s+ayındayız|mevsimin\s+kaçıncı\s+ayındayız)\s*\?*\s*", cleaned_content, re.IGNORECASE):
+        şimdi = datetime.now(pytz.timezone("Europe/Istanbul"))
+        ay_numarası = şimdi.month
+
+        if ay_numarası in [12, 1, 2]:
+            mevsim = "Kış"
+            ay = (ay_numarası - 12 + 1) if ay_numarası == 12 else (ay_numarası)
+        elif ay_numarası in [3, 4, 5]:
+            mevsim = "İlkbahar"
+            ay = ay_numarası - 3 + 1
+        elif ay_numarası in [6, 7, 8]:
+            mevsim = "Yaz"
+            ay = ay_numarası - 6 + 1
+        elif ay_numarası in [9, 10, 11]:
+            mevsim = "Sonbahar"
+            ay = ay_numarası - 9 + 1
+
+        await message.channel.send(f"Bu mevsiminin {ay}. ayındayız.")
+        if random.randint(1, 2) == 1:
+            await message.add_reaction("👍🏻")
+
     elif re.fullmatch(r"\s*(ne\s+ayındayız|hangi\s+aydayız|ayımız\s*ne|ay(?:ı)?\s*(?:söyle|soyle)?|ayımızı\s*(?:söyle|soyle)?)\s*\?*\s*", cleaned_content, re.IGNORECASE):
         şimdi = datetime.now(pytz.timezone("Europe/Istanbul"))
         aylar = ["Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran",

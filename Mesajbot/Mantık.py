@@ -1,18 +1,10 @@
+from datetime import datetime, timedelta
+from translate import Translator
+from collections import defaultdict
 import discord
-
 import random
-
 import requests
-
-from discord import ui, ButtonStyle
-
-from translate import Translator
-
-from collections import defaultdict
-
-from translate import Translator
-
-from collections import defaultdict
+import pytz
 
 def Parola_Gönder(pass_length):
     karakterler = "é!'£^#+$%½&/=?\*_-@¨¨~~æß´`,;<>.:AaBbCcÇçDdEeFfGgĞğHhIıİiJjKkLlMmNnOoÖöPpQqRrSsŞşTtUuÜüVvWwXxYyZz1234567890"
@@ -47,7 +39,7 @@ sorular = [
     # Fen Bilimleri İle İlgili Sorular
     Sorular("Dünya'nın uydusu nedir?", 2, "Jüpiter", "Mars", "Ay"),
     Sorular("Hangi gezegen halkalara sahiptir?", 0, "Satürn", "Mars", "Venüs"),
-    Sorular("Dünya'nın güneş etrafında dönme süresi nedir?", 0, "365 Gün", "24 Saat", "30 Gün"),
+    Sorular("Dünya'nın güneş etrafında dönme süresi nedir?", 0, "365 Gün 6 Saat", "24 Saat", "30 Gün"),
     Sorular("Dünya'nın kendi etrafında dönme süresi kaç saattir?", 1, "5 Saat", "24 Saat", "12 Saat"),
     Sorular("Ay'ın Dünya etrafında dönme süresi nedir?", 2, "1 Hafta", "4 Gün", "29,5 Gün"),
     Sorular("Güneş Sistemi’ndeki en soğuk gezegen hangisidir?", 2, "Merkür", "Plüton", "Neptün"),

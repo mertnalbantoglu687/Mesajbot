@@ -27,12 +27,13 @@ async def Kullanıcıya_Soru_Gönder(channel, user_id):
         görüntü.add_item(button)
     await channel.send(soru.text, view=görüntü)
 
+
 @bot.event
-async def on_ready():
+async def Açılma():
     print(f"Mesajbot Açıldı.")
 
 @bot.event
-async def Sorularla_Etkileşim(interaction: discord.Interaction):
+async def on_interaction(interaction: discord.Interaction):
     kullanıcı_kimliği = interaction.user.id
     soru_görünümü = kullanıcı_soruları[kullanıcı_kimliği][kullanıcı_yanıtları[kullanıcı_kimliği]]
     soru = sorular[soru_görünümü]
@@ -130,8 +131,8 @@ async def on_message(message):
         if user_id not in kullanıcı_yanıtları:
             kullanıcı_yanıtları[user_id] = 0
             soru_sayisi = random.randint(10, 25)
-            order = random.sample(range(len(sorular)), soru_sayisi)
-            kullanıcı_soruları[user_id] = order
+            sorulacak_soru = random.sample(range(len(sorular)), soru_sayisi)
+            kullanıcı_soruları[user_id] = sorulacak_soru
         await Kullanıcıya_Soru_Gönder(message.channel, user_id)
         if random.randint(1, 2) == 1:
             await message.add_reaction("👍🏻")
@@ -143,6 +144,8 @@ async def on_message(message):
         await message.channel.send("Mesajı arapçaya çevirmek için lütfen aşağıdaki düğmeye basınız.", view = görüntü)
         if random.randint(1, 2) == 1:
             await message.add_reaction("👍🏻")
+    else:
+        await message.channel.send("Mesajınız anlaşılamadı.")
 
 class Düğme_Görünümleri(discord.ui.View):
     def __init__(self, owner):

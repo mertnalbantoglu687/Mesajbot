@@ -281,6 +281,23 @@ async def on_message(message):
         şimdi = datetime.now(timezone)
         await Beğenme(message,f"Saat: {şimdi.strftime('%H:%M:%S')}")
 
+    if re.fullmatch(r"\s*[\d\+\-\*/xX:÷.\s]+=?\?*\s*", cleaned_content):
+        expression = re.sub(r"[=?]+", "", cleaned_content).strip()
+        expression = expression.replace("x", "*").replace("X", "*")
+        expression = expression.replace(":", "/").replace("÷", "/")
+        expression = expression.replace(".", "*")
+        expression = expression.replace("//", "/")
+        expression = re.sub(r"(\+)+", "+", expression)
+        expression = re.sub(r"(-)+", "-", expression)
+        expression = re.sub(r"(\*)+", "*", expression)
+        expression = re.sub(r"(/)+", "/", expression)
+        sonuç = eval(expression)
+
+        if isinstance(sonuç, float) and sonuç.is_integer():
+            sonuç = int(sonuç)
+
+        await Beğenme(message,f"Sonuç: {sonuç}")
+
     elif re.fullmatch(r"\bhesap\b|\bhesap\s*makine(si)?\b", cleaned_content, re.IGNORECASE):
         görüntü = Hesap_Makinesi()
         await message.channel.send(view=görüntü)
@@ -305,6 +322,7 @@ async def on_message(message):
         await message.channel.send("Mesajı arapçaya çevirmek için lütfen aşağıdaki düğmeye basınız.", view=görüntü)
         if random.randint(1, 2) == 1:
             await message.add_reaction("👍🏻")
+
     else:
         await message.channel.send("Mesajınız anlaşılamadı.")
 

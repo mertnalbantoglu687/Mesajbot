@@ -281,12 +281,11 @@ async def on_message(message):
         şimdi = datetime.now(timezone)
         await Beğenme(message,f"Saat: {şimdi.strftime('%H:%M:%S')}")
 
-    if re.fullmatch(r"\s*[\d\+\-\*/xX:÷.\s]+=?\?*\s*", cleaned_content):
+    elif re.fullmatch(r"\s*[\d.,\+\-\*/xX:÷\s]+=?\?*\s*", cleaned_content):
         expression = re.sub(r"[=?]+", "", cleaned_content).strip()
+        expression = re.sub(r"[,.]+", ".", expression)
         expression = expression.replace("x", "*").replace("X", "*")
         expression = expression.replace(":", "/").replace("÷", "/")
-        expression = expression.replace(".", "*")
-        expression = expression.replace("//", "/")
         expression = re.sub(r"(\+)+", "+", expression)
         expression = re.sub(r"(-)+", "-", expression)
         expression = re.sub(r"(\*)+", "*", expression)
@@ -295,7 +294,7 @@ async def on_message(message):
 
         if isinstance(sonuç, float) and sonuç.is_integer():
             sonuç = int(sonuç)
-
+    
         await Beğenme(message,f"Sonuç: {sonuç}")
 
     elif re.fullmatch(r"\bhesap\b|\bhesap\s*makine(si)?\b", cleaned_content, re.IGNORECASE):

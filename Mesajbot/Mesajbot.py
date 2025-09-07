@@ -139,7 +139,7 @@ async def on_message(message):
         if random.randint(1, 2) == 1:
             await message.add_reaction("👍🏻")
 
-    elif re.search(r"(kaçıncı\s+mevsimdeyiz|mevsimimiz\s+kaçıncı\s+mevsim|bu\s+mevsim\s+kaçıncı\s+mevsim|mevsimlerden\s+kaçıncı\s+mevsimdeyiz|mevsimlerden\s+kaçıncıdayız)\s*\?*", cleaned_content, re.IGNORECASE):
+    elif re.fullmatch(r"(kaçıncı\s+mevsimdeyiz|mevsimimiz\s+kaçıncı\s+mevsim|bu\s+mevsim\s+kaçıncı\s+mevsim|mevsimlerden\s+kaçıncı\s+mevsimdeyiz|mevsimlerden\s+kaçıncıdayız)\s*\?*", cleaned_content, re.IGNORECASE):
         şimdi = datetime.now(pytz.timezone("Europe/Istanbul"))
         ay_numarası = şimdi.month
 
@@ -229,7 +229,7 @@ async def on_message(message):
         if random.randint(1, 2) == 1:
             await message.add_reaction("👍🏻")
 
-    elif re.search(r"\s*(?:bu\s+)?(bugün\s+mevsimin\s+kaçıncı\s+günü|mevsimin\s+kaçıncı\s+günü|mevsimin\s+kaçıncı\s+günündeyiz|bu\s+mevsimin\s+günlerinden\s+kaçıncıdayız|mevsimin\s+günlerinden\s+kaçıncı\s+gündeyiz)\s*\?*\s*", cleaned_content, re.IGNORECASE):
+    elif re.fullmatch(r"\s*(?:bu\s+)?(bugün\s+mevsimin\s+kaçıncı\s+günü|mevsimin\s+kaçıncı\s+günü|mevsimin\s+kaçıncı\s+günündeyiz|bu\s+mevsimin\s+günlerinden\s+kaçıncıdayız|mevsimin\s+günlerinden\s+kaçıncı\s+gündeyiz)\s*\?*\s*", cleaned_content, re.IGNORECASE):
         şimdi = datetime.now(pytz.timezone("Europe/Istanbul"))
         ay = şimdi.month
         gün = şimdi.day

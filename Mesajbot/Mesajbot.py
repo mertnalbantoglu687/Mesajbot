@@ -1,11 +1,11 @@
 from discord.ext import commands, tasks
+from dotenv import load_dotenv
 from Mantık import *
 import discord
 import os
 import re
 
-from dotenv import load_dotenv
-load_dotenv(override=True)
+load_dotenv(override = True)
 
 TOKEN = os.environ.get("DISCORD_TOKEN")
 
@@ -13,7 +13,8 @@ intents = discord.Intents.all()
 intents.messages = True
 intents.guilds = True
 intents.message_content = True
-bot = commands.Bot(command_prefix="", intents=intents)
+
+bot = commands.Bot(command_prefix = "", intents = intents)
 
 kullanıcı_yanıtları = {}
 kullanıcı_soruları = {}
@@ -25,7 +26,7 @@ async def Kullanıcıya_Soru_Gönder(channel, user_id):
     görüntü = discord.ui.View()
     for button in soru.Düğmeler():
         görüntü.add_item(button)
-    await channel.send(soru.text, view=görüntü)
+    await channel.send(soru.text, view = görüntü)
 
 @bot.event
 async def on_ready():
@@ -199,7 +200,7 @@ async def on_message(message):
 
         await Beğenme(message,f"Yılın {mevsim}. mevsimindeyiz.")
 
-    elif re.fullmatch(r"\s*(?:bu\s+)?(bugün\s+mevsimin\s+kaçıncı\s+günü|mevsimin\s+kaçıncı\s+günü|mevsimin\s+kaçıncı\s+günündeyiz|bu\s+mevsimin\s+günlerinden\s+kaçıncıdayız|mevsimin\s+günlerinden\s+kaçıncı\s+gündeyiz)\s*\?*\s*", cleaned_content, re.IGNORECASE):
+    elif re.fullmatch(r"\s*(?:bu\s+)?(bugün\s+mevsimin\s+kaçıncı\s+günü|mevsimin\s+kaçıncı\s+günü|mevsimin\s+kaçıncı\s+günündeyiz|bu\s+mevsimin\s+kaçıncı\s+günündeyiz|bu\s+mevsimin\s+günlerinden\s+kaçıncıdayız|mevsimin\s+günlerinden\s+kaçıncı\s+gündeyiz)\s*\?*\s*", cleaned_content, re.IGNORECASE):
         şimdi = datetime.now(pytz.timezone("Europe/Istanbul"))
         ay = şimdi.month
         gün = şimdi.day
@@ -221,7 +222,7 @@ async def on_message(message):
 
         await Beğenme(message,f"Bu mevsimin {gün}. günündeyiz.")
 
-    elif re.fullmatch(r"\s*(?:bu\s+)?(mevsimin\s+haftalarından\s+kaçıncıdayız|mevsimin\s+haftalarından\s+kaçıncı\s+haftadayız|mevsimin\s+haftalarından\s+kaçıncı\s+haftasındayız)\s*\?*\s*", cleaned_content, re.IGNORECASE):
+    elif re.fullmatch(r"\s*(?:bu\s+)?(mevsimin\s+kaçıncı\s+haftasındayız|mevsimin\s+haftalarından\s+kaçıncıdayız|mevsimin\s+haftalarından\s+kaçıncı\s+haftadayız|mevsimin\s+haftalarından\s+kaçıncı\s+haftasındayız)\s*\?*\s*", cleaned_content, re.IGNORECASE):
         şimdi = datetime.now(pytz.timezone("Europe/Istanbul"))
         ay_numarası = şimdi.month
 
@@ -243,7 +244,7 @@ async def on_message(message):
 
         await Beğenme(message,f"Bu mevsiminin {hafta}. haftasındayız.")
 
-    elif re.fullmatch(r"\s*(?:bu\s+)?(mevsimin\s+aylarından\s+kaçıncıdayız|mevsimin\s+aylarından\s+kaçıncı\s+aydayız|mevsimin\s+aylarından\s+kaçıncı\s+ayındayız)\s*\?*\s*", cleaned_content, re.IGNORECASE):
+    elif re.fullmatch(r"\s*(?:bu\s+)?(mevsimin\s+haftalarından\s+kaçıncıdayız|mevsimin\s+haftalarından\s+kaçıncı\s+haftadayız|mevsimin\s+haftalarından\s+kaçıncı\s+haftasındayız|mevsimin\s+kaçıncı\s+haftasındayız|bu\s+mevsimin\s+kaçıncı\s+haftasındayız|mevsimin\s+kaçıncı\s+haftadayız|bu\s+mevsimin\s+kaçıncı\s+haftadayız|mevsimin\s+aylarından\s+kaçıncıdayız|mevsimin\s+aylarından\s+kaçıncı\s+aydayız|mevsimin\s+aylarından\s+kaçıncı\s+ayındayız|mevsimin\s+kaçıncı\s+ayındayız|bu\s+mevsimin\s+kaçıncı\s+ayındayız|mevsimin\s+kaçıncı\s+aydayız|bu\s+mevsimin\s+kaçıncı\s+aydayız)\s*\?*\s*", cleaned_content, re.IGNORECASE):
         şimdi = datetime.now(pytz.timezone("Europe/Istanbul"))
         ay_numarası = şimdi.month
 

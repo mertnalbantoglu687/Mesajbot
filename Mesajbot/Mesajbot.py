@@ -123,7 +123,7 @@ async def on_message(message):
         if random.randint(1, 2) == 1:
             await message.add_reaction("👍🏻")
 
-    elif re.fullmatch(r"\s*(hangi\s+m+e+v+s+i+m+d+e+y+i+z|m+e+v+s+i+m+i+m+i+z\s*n+e|m+e+v+s+i+m\s*n+e|m+e+v+s+i+m|m+e+v+s+i+m+i+m+i+z|m+e+v+s+i+m+i\s+s+ö+y+l+e|m+e+v+s+i+m+i\s+s+o+y+l+e|m+e+v+s+i+m\s+s+ö+y+l+e|m+e+v+s+i+m\s+s+o+y+l+e)\s*\?*\s*",cleaned_content,re.IGNORECASE):
+    elif re.fullmatch(r"\s*(hangi\s+mevsimdeyiz|mevsimimiz\s*ne|mevsim\s*ne|mevsim|mevsimimiz|mevsimi\s*söyle|mevsimi\s*soyle|mevsim\s*söyle|mevsim\s*soyle|mevsimlerden\s+hangisindeyiz)\s*\?*\s*",cleaned_content,re.IGNORECASE):
         şimdi = datetime.now(pytz.timezone("Europe/Istanbul"))
         ay_numarası = şimdi.month
 
@@ -139,7 +139,7 @@ async def on_message(message):
         if random.randint(1, 2) == 1:
             await message.add_reaction("👍🏻")
 
-    elif re.search(r"(kaçıncı\s+mevsimdeyiz|mevsimimiz\s+kaçıncı\s+mevsim|bu\s+mevsim\s+kaçıncı\s+mevsim)\s*\?*", cleaned_content, re.IGNORECASE):
+    elif re.search(r"(kaçıncı\s+mevsimdeyiz|mevsimimiz\s+kaçıncı\s+mevsim|bu\s+mevsim\s+kaçıncı\s+mevsim|mevsimlerden\s+kaçıncı\s+mevsimdeyiz|mevsimlerden\s+kaçıncıdayız)\s*\?*", cleaned_content, re.IGNORECASE):
         şimdi = datetime.now(pytz.timezone("Europe/Istanbul"))
         ay_numarası = şimdi.month
 
@@ -156,61 +156,63 @@ async def on_message(message):
         if random.randint(1, 2) == 1:
             await message.add_reaction("👍🏻")
 
-    elif re.fullmatch(r"\s*(kaçıncı\s+yıldayız|kaç\s+yıl(?:ındayız|ındayız\s*söyle|ındayız\s*soyle)?|hangi\s+yıldayız|yılımız\s*ne|yıl(?:ı|ı)?\s*(?:söyle|soyle)?|yılımızı\s*(?:söyle|soyle)?)\s*\?*\s*", cleaned_content, re.IGNORECASE):
+    elif re.fullmatch(r"\s*(kaçıncı\s+yıldayız|kaç\s+yıl(?:ındayız|ındayız\s*söyle|ındayız\s*soyle)?|hangi\s+yıldayız|yılımız\s*ne|yıl(?:ı|ı)?\s*(?:söyle|soyle)?|yılımızı\s*(?:söyle|soyle)?|yıllardan\s+ne|yıllardan\s+hangi\s+yıldayız|yıllardan\s+kaçıncıdayız|yıllardan\s+kaçıncı\s+yıldayız)\s*\?*\s*", cleaned_content, re.IGNORECASE):
         şimdi = datetime.now(pytz.timezone("Europe/Istanbul"))
-        await message.channel.send(f"Yıl: {şimdi.year}")
+        yıl = şimdi.year
+        await message.channel.send(f"Yıl: {yıl}")
         if random.randint(1, 2) == 1:
             await message.add_reaction("👍🏻")
 
-    elif re.fullmatch(r"\s*(kaçıncı\s+aydayız|kaçıncı\s+aydayız\s*(?:söyle|soyle)?)\s*\?*\s*", cleaned_content, re.IGNORECASE):
+    elif re.fullmatch(r"\s*(kaçıncı\s+aydayız|kaçıncı\s+aydayız\s*(?:söyle|soyle)?|aylardan\s+kaçıncı\s+aydayız|aylardan\s+kaçıncıdayız)\s*\?*\s*", cleaned_content, re.IGNORECASE):
         şimdi = datetime.now(pytz.timezone("Europe/Istanbul"))
-        await message.channel.send(f"{şimdi.month}. aydayız.")
+        ay = şimdi.month
+        await message.channel.send(f"{ay}. aydayız.")
         if random.randint(1, 2) == 1:
             await message.add_reaction("👍🏻")
 
-    elif re.fullmatch(r"\s*(bu\s+haftanın\s+kaçıncı\s+gün(ü)?|bugün\s+haftanın\s+kaçıncı\s+günü|haftanın\s+kaçıncı\s+gün(ü)?n(d)eyiz)\s*\?*\s*", cleaned_content, re.IGNORECASE):
+    elif re.fullmatch(r"\s*(bu\s+haftanın\s+kaçıncı\s+gün(ü)?|bugün\s+haftanın\s+kaçıncı\s+günü|haftanın\s+kaçıncı\s+gün(ü)?n(d)eyiz|haftanın\s+günlerinden\s+kaçıncıdayız|haftanın\s+günlerinden\s+kaçıncı\s+gündeyiz)\s*\?*\s*", cleaned_content, re.IGNORECASE):
         şimdi = datetime.now(pytz.timezone("Europe/Istanbul"))
-        haftanin_gunu = şimdi.isoweekday()
-        await message.channel.send(f"Haftanın {haftanin_gunu}. günündeyiz.")
+        gün = şimdi.isoweekday()
+        await message.channel.send(f"Haftanın {gün}. günündeyiz.")
         if random.randint(1, 2) == 1:
             await message.add_reaction("👍🏻")
 
-    elif re.fullmatch(r"\s*(bugün\s+)?(ay(ın)?|bu\s+ayın)\s+kaçıncı\s+gün(ü)?(ndeyiz)?\s*\?*\s*", cleaned_content, re.IGNORECASE):
+    elif re.fullmatch(r"\s*(bugün\s+)?(ay(ın)?|bu\s+ayın)\s+kaçıncı\s+gün(ü)?(ndeyiz)?|ayın\s+günlerinden\s+kaçıncıdayız|ayın\s+günlerinden\s+kaçıncı\s+gün(ü)?d?eyiz\s*\?*\s*", cleaned_content, re.IGNORECASE):
         şimdi = datetime.now(pytz.timezone("Europe/Istanbul"))
-        ayın_günü = şimdi.day
-        await message.channel.send(f"Ayın {ayın_günü}. günündeyiz.")
+        gün = şimdi.day
+        await message.channel.send(f"Ayın {gün}. günündeyiz.")
         if random.randint(1, 2) == 1:
             await message.add_reaction("👍🏻")
 
-    elif re.fullmatch(r"\s*(bu\s+ay\s+kaç\s+gün( olacak| sürecek)?|buay\s+kaç\s+gün( olacak| sürecek)?|bu\s+ay\s+kaç\s+gün|bulunduğumuz\s+ay\s+kaç\s+gün|olduğumuz\s+ay\s+kaç\s+gün|içinde\s+bulunduğumuz\s+ay\s+kaç\s+gün|içerisinde\s+bulunduğumuz\s+ay\s+kaç\s+gün)\s*\?*\s*", cleaned_content, re.IGNORECASE):
+    elif re.fullmatch(r"\s*(bu\s+ay\s+kaç\s+gün( olacak| sürecek)?|buay\s+kaç\s+gün( olacak| sürecek)?|bu\s+ay\s+kaç\s+gün|bulunduğumuz\s+ay\s+kaç\s+gün|olduğumuz\s+ay\s+kaç\s+gün|içinde\s+bulunduğumuz\s+ay\s+kaç\s+gün|içerisinde\s+bulunduğumuz\s+ay\s+kaç\s+gün|bu\s+ayın\s+günleri\s+kaç\s+tane)\s*\?*\s*", cleaned_content, re.IGNORECASE):
         şimdi = datetime.now(pytz.timezone("Europe/Istanbul"))
-        ayın_günü_sayısı = (datetime(şimdi.year, şimdi.month % 12 + 1, 1) - timedelta(days=1)).day
-        await message.channel.send(f"Bu ay {ayın_günü_sayısı} gün.")
+        gün_sayısı = (datetime(şimdi.year, şimdi.month % 12 + 1, 1) - timedelta(days=1)).day
+        await message.channel.send(f"Bu ay {gün_sayısı} gün.")
         if random.randint(1, 2) == 1:
             await message.add_reaction("👍🏻")
 
-    elif re.fullmatch(r"\s*(bugün\s+)?(yıl(ın)?|bu\s+yıl)\s+kaçıncı\s+gün(ü)?(ndeyiz)?\s*\?*\s*", cleaned_content, re.IGNORECASE):
+    elif re.fullmatch(r"\s*(bugün\s+)?(yıl(ın)?|bu\s+yıl|yılın\s+günlerinden|yılın\s+günlerinden\s+kaçıncı)\s+kaçıncı\s+gün(ü)?(ndeyiz)?\s*\?*\s*", cleaned_content, re.IGNORECASE):
         şimdi = datetime.now(pytz.timezone("Europe/Istanbul"))
-        yılın_günü = şimdi.timetuple().tm_yday
-        await message.channel.send(f"Yılın {yılın_günü}. günündeyiz.")
+        gün = şimdi.timetuple().tm_yday
+        await message.channel.send(f"Yılın {gün}. günündeyiz.")
         if random.randint(1, 2) == 1:
             await message.add_reaction("👍🏻")
 
-    elif re.fullmatch(r"\s*(bu\s+yılın\s+kaçıncı\s+haftasındayız|yılın\s+kaçıncı\s+haftasındayız)\s*\?*\s*", cleaned_content, re.IGNORECASE):
+    elif re.fullmatch(r"\s*(bu\s+yılın\s+kaçıncı\s+haftasındayız|yılın\s+kaçıncı\s+haftasındayız|yılın\s+haftalarından\s+kaçıncıdayız|yılın\s+haftalarından\s+kaçıncı\s+haftasındayız)\s*\?*\s*", cleaned_content, re.IGNORECASE):
         şimdi = datetime.now(pytz.timezone("Europe/Istanbul"))
         hafta = şimdi.isocalendar()[1]
         await message.channel.send(f"Yılın {hafta}. haftasındayız.")
         if random.randint(1, 2) == 1:
             await message.add_reaction("👍🏻")
 
-    elif re.fullmatch(r"\s*(bu\s+yılın\s+kaçıncı\s+ayındayız|yılın\s+kaçıncı\s+ayındayız)\s*\?*\s*", cleaned_content, re.IGNORECASE):
+    elif re.fullmatch(r"\s*(bu\s+yılın\s+kaçıncı\s+ayındayız|yılın\s+kaçıncı\s+ayındayız|yılın\s+aylarından\s+kaçıncıdayız|yılın\s+aylarından\s+kaçıncı\s+aydayız)\s*\?*\s*", cleaned_content, re.IGNORECASE):
         şimdi = datetime.now(pytz.timezone("Europe/Istanbul"))
         ay = şimdi.month
         await message.channel.send(f"Yılın {ay}. ayındayız.")
         if random.randint(1, 2) == 1:
             await message.add_reaction("👍🏻")
 
-    elif re.fullmatch(r"\s*(yılın\s+kaçıncı\s+mevsimindeyiz|bu\s+yılın\s+kaçıncı\s+mevsimindeyiz)\s*\?*\s*", cleaned_content, re.IGNORECASE):
+    elif re.fullmatch(r"\s*(yılın\s+mevsimlerinden\s+kaçıncıdayız|mevsimlerden\s+kaçıncıdayız|yılın\s+mevsimlerinden\s+kaçıncı\s+mevsimdeyiz|yılın\s+mevsimlerinden\s+kaçıncı\s+mevsimindeyiz|mevsimlerden\s+kaçıncı\s+mevsimdeyiz|bu\s+yılın\s+kaçıncı\s+mevsimindeyiz)\s*\?*\s*", cleaned_content, re.IGNORECASE):
         şimdi = datetime.now(pytz.timezone("Europe/Istanbul"))
         ay_numarası = şimdi.month
 
@@ -227,7 +229,7 @@ async def on_message(message):
         if random.randint(1, 2) == 1:
             await message.add_reaction("👍🏻")
 
-    elif re.search(r"\s*(bugün\s+mevsimin\s+kaçıncı\s+günü|mevsimin\s+kaçıncı\s+günü|bu\s+mevsimin\s+kaçıncı\s+günündeyiz|mevsimin\s+kaçıncı\s+günündeyiz)\s*\?*\s*", cleaned_content, re.IGNORECASE):
+    elif re.search(r"\s*(?:bu\s+)?(bugün\s+mevsimin\s+kaçıncı\s+günü|mevsimin\s+kaçıncı\s+günü|mevsimin\s+kaçıncı\s+günündeyiz|bu\s+mevsimin\s+günlerinden\s+kaçıncıdayız|mevsimin\s+günlerinden\s+kaçıncı\s+gündeyiz)\s*\?*\s*", cleaned_content, re.IGNORECASE):
         şimdi = datetime.now(pytz.timezone("Europe/Istanbul"))
         ay = şimdi.month
         gün = şimdi.day
@@ -245,16 +247,15 @@ async def on_message(message):
             mevsim_numarası = 4
             mevsim_ayları = [12, 1, 2]
 
-        mevsim_günü = (datetime(şimdi.year, ay, gün) - datetime(şimdi.year, mevsim_ayları[0], 1)).days + 1
+        gün = (datetime(şimdi.year, ay, gün) - datetime(şimdi.year, mevsim_ayları[0], 1)).days + 1
 
-        await message.channel.send(f"Bu mevsimin {mevsim_günü}. günündeyiz.")
+        await message.channel.send(f"Bu mevsimin {gün}. günündeyiz.")
         if random.randint(1, 2) == 1:
             await message.add_reaction("👍🏻")
 
-    elif re.fullmatch(r"\s*(bu\s+mevsimin\s+kaçıncı\s+haftasındayız|mevsimin\s+kaçıncı\s+haftasındayız)\s*\?*\s*", cleaned_content, re.IGNORECASE):
+    elif re.fullmatch(r"\s*(?:bu\s+)?(mevsimin\s+haftalarından\s+kaçıncıdayız|mevsimin\s+haftalarından\s+kaçıncı\s+haftadayız|mevsimin\s+haftalarından\s+kaçıncı\s+haftasındayız)\s*\?*\s*", cleaned_content, re.IGNORECASE):
         şimdi = datetime.now(pytz.timezone("Europe/Istanbul"))
         ay_numarası = şimdi.month
-        gün_numarası = şimdi.day
 
         if ay_numarası in [12, 1, 2]:
             mevsim = "Kış"
@@ -270,13 +271,13 @@ async def on_message(message):
             başlangıç_ay = 9
 
         mevsim_başlangıcı = datetime(şimdi.year, başlangıç_ay, 1, tzinfo=pytz.timezone("Europe/Istanbul"))
-        hafta_numarası = ((şimdi - mevsim_başlangıcı).days // 7) + 1
+        hafta = ((şimdi - mevsim_başlangıcı).days // 7) + 1
 
-        await message.channel.send(f"Bu mevsiminin {hafta_numarası}. haftasındayız.")
+        await message.channel.send(f"Bu mevsiminin {hafta}. haftasındayız.")
         if random.randint(1, 2) == 1:
             await message.add_reaction("👍🏻")
 
-    elif re.fullmatch(r"\s*(bu\s+mevsimin\s+kaçıncı\s+ayındayız|mevsimin\s+kaçıncı\s+ayındayız)\s*\?*\s*", cleaned_content, re.IGNORECASE):
+    elif re.fullmatch(r"\s*(?:bu\s+)?(mevsimin\s+aylarından\s+kaçıncıdayız|mevsimin\s+aylarından\s+kaçıncı\s+aydayız|mevsimin\s+aylarından\s+kaçıncı\s+ayındayız)\s*\?*\s*", cleaned_content, re.IGNORECASE):
         şimdi = datetime.now(pytz.timezone("Europe/Istanbul"))
         ay_numarası = şimdi.month
 
@@ -297,7 +298,7 @@ async def on_message(message):
         if random.randint(1, 2) == 1:
             await message.add_reaction("👍🏻")
 
-    elif re.fullmatch(r"\s*(ne\s+ayındayız|hangi\s+aydayız|ayımız\s*ne|ay(?:ı)?\s*(?:söyle|soyle)?|ayımızı\s*(?:söyle|soyle)?)\s*\?*\s*", cleaned_content, re.IGNORECASE):
+    elif re.fullmatch(r"\s*(ne\s+ayındayız|hangi\s+aydayız|ayımız\s*ne|ay(?:ı)?\s*(?:söyle|soyle)?|ayımızı\s*(?:söyle|soyle)?|aylardan\s+ne|aylardan\s+hangisindeyiz|aylardan\s+hangi\s+aydaız)\s*\?*\s*", cleaned_content, re.IGNORECASE):
         şimdi = datetime.now(pytz.timezone("Europe/Istanbul"))
         aylar = ["Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran",
                  "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık"]
@@ -306,11 +307,11 @@ async def on_message(message):
         if random.randint(1, 2) == 1:
             await message.add_reaction("👍🏻")
 
-    elif re.fullmatch(r"\s*(g+ü+n|g+ü+n+ü\s*s+ö+y+l+e|b+u+g+ü+n+ü\s*s+ö+y+l+e|g+ü+n+ü\s*s+o+y+l+e|b+u+g+ü+n+ü\s*s+o+y+l+e|g+ü+n\s*n+e|g+ü+n+l+e+r+d+e+n\s*n+e|b+u+g+ü+n\s+g+ü+n+l+e+r+d+e+n\s+n+e|b+u+g+ü+n\s+h+a+n+g+i\s+g+ü+n|b+u+g+ü+n\s+g+ü+n+l+e+r+d+e+n\s+h+a+n+g+i+s+i)\s*\?*\s*", cleaned_content, re.IGNORECASE):
-        haftanın_günleri = ["Pazartesi", "Salı", "Çarşamba", "Perşembe", "Cuma", "Cumartesi", "Pazar"]
+    elif re.fullmatch(r"\s*(g+ü+n|g+ü+n+ü\s*s+ö+y+l+e|b+u+g+ü+n+ü\s*s+ö+y+l+e|g+ü+n+ü\s*s+o+y+l+e|b+u+g+ü+n+ü\s*s+o+y+l+e|g+ü+n\s*n+e|g+ü+n+l+e+r+d+e+n\s*n+e|b+u+g+ü+n\s+g+ü+n+l+e+r+d+e+n\s+n+e|b+u+g+ü+n\s+h+a+n+g+i\s+g+ü+n|b+u+g+ü+n\s+g+ü+n+l+e+r+d+e+n\s+h+a+n+g+i+s+i|g+ü+n+l+e+r+d+e+n\s+h+a+n+g+i+s+i|g+ü+n+l+e+r+d+e+n\s+h+a+n+g+i\s+g+ü+n|g+ü+n+l+e+r+d+e+n\s+n+e)\s*\?*\s*", cleaned_content, re.IGNORECASE):
         şimdi = datetime.now(pytz.timezone("Europe/Istanbul"))
-        bugün = haftanın_günleri[şimdi.weekday()]
-        await message.channel.send(f"Bugün: {bugün}")
+        günler = ["Pazartesi", "Salı", "Çarşamba", "Perşembe", "Cuma", "Cumartesi", "Pazar"]
+        gün = günler[şimdi.weekday()]
+        await message.channel.send(f"Bugün: {gün}")
         if random.randint(1, 2) == 1:
             await message.add_reaction("👍🏻")
 

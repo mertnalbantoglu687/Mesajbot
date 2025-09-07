@@ -48,19 +48,19 @@ async def on_interaction(interaction: discord.Interaction):
         kullanıcı_cevapları[kullanıcı_kimliği] = {"Doğru Cevaplar": 0, "Yanlış Cevaplar": 0}
     if seçilen_görünüm == soru.answer_id:
         kullanıcı_cevapları[kullanıcı_kimliği]["Doğru Cevaplar"] += 1
-        await interaction.response.send_message("Doğru bildin.", ephemeral=True)
+        await interaction.response.send_message("Doğru bildin.", ephemeral = True)
     else:
         kullanıcı_cevapları[kullanıcı_kimliği]["Yanlış Cevaplar"] += 1
         await interaction.response.send_message(
             f"Yanlış bildin. Doğru cevap {soru.secenekler[soru.answer_id]} olacaktı.",
-            ephemeral=True
+            ephemeral = True
         )
     kullanıcı_yanıtları[kullanıcı_kimliği] += 1
     if kullanıcı_yanıtları[kullanıcı_kimliği] >= len(kullanıcı_soruları[kullanıcı_kimliği]):
         skor = kullanıcı_cevapları[kullanıcı_kimliği]
         await interaction.followup.send(
             f"Sorular bitti.\nSoru Sayısı: {len(kullanıcı_soruları[kullanıcı_kimliği])}\nDoğru Cevaplar: {skor['Doğru Cevaplar']}\nYanlış Cevaplar: {skor['Yanlış Cevaplar']}",
-            ephemeral=True
+            ephemeral = True
         )
         del kullanıcı_yanıtları[kullanıcı_kimliği]
         del kullanıcı_soruları[kullanıcı_kimliği]
@@ -71,8 +71,10 @@ async def on_interaction(interaction: discord.Interaction):
 @bot.event
 async def on_message(message):
     cleaned_content = message.content.lower()
+
     if message.author == bot.user:
         return
+
     await bot.process_commands(message)
 
     if re.fullmatch(r"\s*m+\s*e+\s*r+\s*h+\s*a+\s*b+\s*a+\s*", cleaned_content):
@@ -299,7 +301,7 @@ async def on_message(message):
 
     elif re.fullmatch(r"\bhesap\b|\bhesap\s*makine(si)?\b", cleaned_content, re.IGNORECASE):
         görüntü = Hesap_Makinesi()
-        await message.channel.send(view=görüntü)
+        await message.channel.send(view = görüntü)
         if random.randint(1, 2) == 1:
             await message.add_reaction("👍🏻")
 
@@ -318,7 +320,7 @@ async def on_message(message):
         text_to_translate = re.sub(r"\s*(?:c+e+v+i+r+|ç+e+v+i+r+|a+r+a+p+ç+a\s*(?:c+e+v+i+r+|y+a+z+)?)(?:\s*[:=]?\s*)?", "", cleaned_content, flags=re.IGNORECASE)
         Metin_Analizi(text_to_translate, message.author.name)
         görüntü = Düğme_Görünümleri(message.author.name)
-        await message.channel.send("Mesajı arapçaya çevirmek için lütfen aşağıdaki düğmeye basınız.", view=görüntü)
+        await message.channel.send("Mesajı arapçaya çevirmek için lütfen aşağıdaki düğmeye basınız.", view = görüntü)
         if random.randint(1, 2) == 1:
             await message.add_reaction("👍🏻")
 
@@ -327,10 +329,10 @@ async def on_message(message):
 
 class Düğme_Görünümleri(discord.ui.View):
     def __init__(self, owner):
-        super().__init__(timeout=None)
+        super().__init__(timeout = None)
         self.owner = owner
 
-    @discord.ui.button(label="Arapçaya Çevir", style=discord.ButtonStyle.primary)
+    @discord.ui.button(label = "Arapçaya Çevir", style=discord.ButtonStyle.primary)
     async def Arapçaya_Çevirme(self, button: discord.ui.Button, interaction: discord.Interaction):
         obj = Metin_Analizi.memory[self.owner][-1]
         await interaction.response.send_message(obj.translation_ar, ephemeral=True)

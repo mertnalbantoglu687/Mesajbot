@@ -1,15 +1,18 @@
 from datetime import datetime, timedelta
 from translate import Translator
 from collections import defaultdict
+import sqlite3
 import discord
 import random
 import requests
 import pytz
 
-def Parola_Gönder(pass_length):
+VERİ_TABANI = "Veri_Tabanı.db"
+
+def Parola_Gönder(parola_uzunluğu):
     karakterler = "é!'£^#+$%½&/=?\*_-@¨¨~~æß´`,;<>.:AaBbCcÇçDdEeFfGgĞğHhIıİiJjKkLlMmNnOoÖöPpQqRrSsŞşTtUuÜüVvWwXxYyZz1234567890"
     parola = ""
-    for a in range(pass_length):
+    for a in range(parola_uzunluğu):
         parola += random.choice(karakterler)
     sonuc = "Parola: " + parola
     return sonuc
@@ -28,9 +31,9 @@ class Sorular:
         düğmeler = []
         for a, secenek in enumerate(self.secenekler):
             button = discord.ui.Button(
-                label=secenek,
-                style=discord.ButtonStyle.primary,
-                custom_id=f"answer_{a}"
+                label = secenek,
+                style = discord.ButtonStyle.primary,
+                custom_id = f"answer_{a}"
             )
             düğmeler.append(button)
         return düğmeler
@@ -105,7 +108,7 @@ class Metin_Analizi:
 
     def __translate(self, text, from_lang, to_lang):
         try:
-            translator = Translator(from_lang=from_lang, to_lang=to_lang)
+            translator = Translator(to_lang = to_lang, from_lang = from_lang)
             return translator.translate(text)
         except:
             return "Mesajınız anlaşılamadı."
@@ -186,3 +189,253 @@ class Hesap_Makinesi(discord.ui.View):
     @discord.ui.button(label="÷", style=discord.ButtonStyle.success, row=3)
     async def Bölü(self, button, interaction: discord.Interaction):
         self.input_text += "/"; await self.Yazı(interaction)
+
+skills = [(_,) for _ in ["Python", "SQL", "API", "Discord"]]
+durumlar = [(_,) for _ in [
+    "Prototip Oluşturma",
+    "Geliştirme Aşamasında",
+    "Tamamlandı, kullanıma hazır",
+    "Güncellendi",
+    "Tamamlandı, ancak bakımı yapılmadı"
+]]
+
+from datetime import datetime, timedelta
+from translate import Translator
+from collections import defaultdict
+import sqlite3
+import discord
+import random
+import requests
+import pytz
+
+VERİ_TABANI = "Veri_Tabanı.db"
+
+# Parola Oluşturma Fonksiyonu
+def Parola_Gönder(pass_length):
+    karakterler = "é!'£^#+$%½&/=?\*_-@¨¨~~æß´`,;<>.:AaBbCcÇçDdEeFfGgĞğHhIıİiJjKkLlMmNnOoÖöPpQqRrSsŞşTtUuÜüVvWwXxYyZz1234567890"
+    parola = "".join(random.choice(karakterler) for _ in range(pass_length))
+    return "Parola: " + parola
+
+# Emoji Gönderme Fonksiyonu
+def Emoji_Gönder():
+    return "\U0001f642"
+
+# Sorular Sınıfı
+class Sorular:
+    def __init__(self, text, answer_id, *secenekler):
+        self.text = text
+        self.answer_id = answer_id
+        self.secenekler = secenekler
+
+    def Düğmeler(self):
+        düğmeler = []
+        for a, secenek in enumerate(self.secenekler):
+            button = discord.ui.Button(
+                label=secenek,
+                style=discord.ButtonStyle.primary,
+                custom_id=f"answer_{a}"
+            )
+            düğmeler.append(button)
+        return düğmeler
+
+# Sorular Listesi (Örnek)
+sorular = [
+    Sorular("Dünya'nın uydusu nedir?", 2, "Jüpiter", "Mars", "Ay"),
+    Sorular("Hangi gezegen halkalara sahiptir?", 0, "Satürn", "Mars", "Venüs"),
+    Sorular("Dünya'nın kendi etrafında dönme süresi kaç saattir?", 1, "5 Saat", "24 Saat", "12 Saat"),
+    # ... diğer sorular burada devam eder ...
+]
+
+# Metin Analizi Sınıfı
+class Metin_Analizi:
+    memory = defaultdict(list)
+
+    def __init__(self, text, owner):
+        Metin_Analizi.memory[owner].append(self)
+        self.text = text
+        self.translation_ar = self.__translate(self.text, "tr", "ar")
+        self.response = "Mesajınız anlaşılamadı."
+
+    def __translate(self, text, from_lang, to_lang):
+        try:
+            translator = Translator(to_lang=to_lang, from_lang=from_lang)
+            return translator.translate(text)
+        except:
+            return "Mesajınız anlaşılamadı."
+
+# Hesap Makinesi Sınıfı
+class Hesap_Makinesi(discord.ui.View):
+    def __init__(self):
+        super().__init__(timeout=None)
+        self.input_text = ""
+
+    async def Yazı(self, interaction: discord.Interaction):
+        content_to_send = f"```{self.input_text}```" if self.input_text else ""
+        await interaction.response.edit_message(content=content_to_send, view=self)
+
+    @discord.ui.button(label="1", style=discord.ButtonStyle.primary, row=0)
+    async def Bir(self, button, interaction):
+        self.input_text += "1"; await self.Yazı(interaction)
+
+    @discord.ui.button(label="2", style=discord.ButtonStyle.primary, row=0)
+    async def İki(self, button, interaction):
+        self.input_text += "2"; await self.Yazı(interaction)
+
+    @discord.ui.button(label="3", style=discord.ButtonStyle.primary, row=0)
+    async def Üç(self, button, interaction):
+        self.input_text += "3"; await self.Yazı(interaction)
+
+    @discord.ui.button(label="+", style=discord.ButtonStyle.success, row=0)
+    async def Artı(self, button, interaction):
+        self.input_text += "+"; await self.Yazı(interaction)
+
+    @discord.ui.button(label="4", style=discord.ButtonStyle.primary, row=1)
+    async def Dört(self, button, interaction):
+        self.input_text += "4"; await self.Yazı(interaction)
+
+    @discord.ui.button(label="5", style=discord.ButtonStyle.primary, row=1)
+    async def Beş(self, button, interaction):
+        self.input_text += "5"; await self.Yazı(interaction)
+
+    @discord.ui.button(label="6", style=discord.ButtonStyle.primary, row=1)
+    async def Altı(self, button, interaction):
+        self.input_text += "6"; await self.Yazı(interaction)
+
+    @discord.ui.button(label="-", style=discord.ButtonStyle.success, row=1)
+    async def Eksi(self, button, interaction):
+        self.input_text += "-"; await self.Yazı(interaction)
+
+    @discord.ui.button(label="7", style=discord.ButtonStyle.primary, row=2)
+    async def Yedi(self, button, interaction):
+        self.input_text += "7"; await self.Yazı(interaction)
+
+    @discord.ui.button(label="8", style=discord.ButtonStyle.primary, row=2)
+    async def Sekiz(self, button, interaction):
+        self.input_text += "8"; await self.Yazı(interaction)
+
+    @discord.ui.button(label="9", style=discord.ButtonStyle.primary, row=2)
+    async def Dokuz(self, button, interaction):
+        self.input_text += "9"; await self.Yazı(interaction)
+
+    @discord.ui.button(label="x", style=discord.ButtonStyle.success, row=2)
+    async def Çarpı(self, button, interaction):
+        self.input_text += "*"; await self.Yazı(interaction)
+
+    @discord.ui.button(label="0", style=discord.ButtonStyle.primary, row=3)
+    async def Sıfır(self, button, interaction):
+        self.input_text += "0"; await self.Yazı(interaction)
+
+    @discord.ui.button(label="Sıfırla", style=discord.ButtonStyle.danger, row=3)
+    async def Sıfırla(self, button, interaction):
+        self.input_text = ""; await self.Yazı(interaction)
+
+    @discord.ui.button(label="=", style=discord.ButtonStyle.primary, row=3)
+    async def Eşittir(self, button, interaction):
+        try:
+            self.input_text = str(eval(self.input_text))
+        except:
+            self.input_text = "Mesajınız Anlaşılamadı."
+        await self.Yazı(interaction)
+
+    @discord.ui.button(label="÷", style=discord.ButtonStyle.success, row=3)
+    async def Bölü(self, button, interaction):
+        self.input_text += "/"; await self.Yazı(interaction)
+
+skills = [(_,) for _ in ["Python", "SQL", "API", "Discord"]]
+durumlar = [(_,) for _ in [
+    "Prototip Yapılıyor.",
+    "Prototip Geliştirme Aşamasında.",
+    "Prototip Tamamlandı.",
+    "Prototip Güncellendi."
+]]
+
+class Veritabani_Yöneticisi:
+    def __init__(self, veritabani):
+        self.veritabani = veritabani
+
+    def Tablolar(self):
+        bağlantı = sqlite3.connect(self.veritabani)
+        with bağlantı:
+            bağlantı.execute("""CREATE TABLE IF NOT EXISTS projeler (
+                                    proje_numarası INTEGER PRIMARY KEY,
+                                    kullanıcı_numarası INTEGER,
+                                    proje_İsmi TEXT NOT NULL,
+                                    açıklama TEXT,
+                                    link TEXT,
+                                    durum INTEGER,
+                                    FOREIGN KEY(durum) REFERENCES durum(durum)
+                                )""")
+            bağlantı.execute("""CREATE TABLE IF NOT EXISTS beceriler (
+                                    beceri INTEGER PRIMARY KEY,
+                                    beceri_ismi TEXT
+                                )""")
+            bağlantı.execute("""CREATE TABLE IF NOT EXISTS proje_beceriler (
+                                    proje_numarası INTEGER,
+                                    beceri INTEGER,
+                                    FOREIGN KEY(proje_numarası) REFERENCES projeler(proje_numarası),
+                                    FOREIGN KEY(beceri) REFERENCES beceriler(beceri)
+                                )""")
+            bağlantı.execute("""CREATE TABLE IF NOT EXISTS durum (
+                                    durum INTEGER PRIMARY KEY,
+                                    durum_ismi TEXT
+                                )""")
+            bağlantı.commit()
+
+    def __Çoklu_Ekle(self, sql, veri):
+        bağlantı = sqlite3.connect(self.veritabani)
+        with bağlantı:
+            bağlantı.executemany(sql, veri)
+            bağlantı.commit()
+
+    def __Veri_Seç(self, sql, veri=tuple()):
+        bağlantı = sqlite3.connect(self.veritabani)
+        with bağlantı:
+            imleç = bağlantı.cursor()
+            imleç.execute(sql, veri)
+            return imleç.fetchall()
+
+    def Varsayılanı_Ekle(self):
+        self.__Çoklu_Ekle("INSERT INTO beceriler (beceri_ismi) VALUES(?)", skills)
+        self.__Çoklu_Ekle("INSERT INTO durum (durum_ismi) VALUES(?)", durumlar)
+
+    def Proje_Ekle(self, kullanıcı_numarası, proje_ismi, açıklama, link, durum):
+        bağlantı = sqlite3.connect(self.veritabani)
+        with bağlantı:
+            bağlantı.execute(
+                "INSERT INTO projeler (kullanıcı_numarası, proje_İsmi, açıklama, link, durum) VALUES (?, ?, ?, ?, ?)",
+                (kullanıcı_numarası, proje_ismi, açıklama, link, durum)
+            )
+            bağlantı.commit()
+
+    def Projeleri_Getir(self):
+        return self.__Veri_Seç("SELECT * FROM projeler")
+
+    def Proje_Getir_By_Id(self, proje_id):
+        return self.__Veri_Seç("SELECT * FROM projeler WHERE proje_numarası = ?", (proje_id,))
+
+    def Proje_Durumunu_Güncelle(self, proje_id, durum):
+        bağlantı = sqlite3.connect(self.veritabani)
+        with bağlantı:
+            bağlantı.execute("UPDATE projeler SET durum = ? WHERE proje_numarası = ?", (durum, proje_id))
+            bağlantı.commit()
+
+    def Projeyi_Sil(self, proje_id):
+        bağlantı = sqlite3.connect(self.veritabani)
+        with bağlantı:
+            bağlantı.execute("DELETE FROM projeler WHERE proje_numarası = ?", (proje_id,))
+            bağlantı.commit()
+
+if __name__ == "__main__":
+    yonetici = Veritabani_Yöneticisi(VERİ_TABANI)
+    yonetici.Tablolar()
+    yonetici.Varsayılanı_Ekle()
+
+    yonetici.Proje_Ekle(
+        1,
+        "Discord Yardımcı Bot",
+        "Discord için moderasyon ve eğlence botu",
+        "https://github.com/mertnalbantoglu687/Mesajbot.git",
+        2
+    )
+
+    print(yonetici.Projeleri_Getir())

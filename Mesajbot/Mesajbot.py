@@ -65,7 +65,7 @@ async def Kullanıcıya_Soru_Gönder(channel, user_id):
     for button in soru.Düğmeler():
         görüntü.add_item(button)
 
-    await channel.send(soru.text, view = görüntü)
+    await channel.send(soru.text, view=görüntü)
 
 @bot.event
 async def on_interaction(interaction: discord.Interaction):
@@ -80,29 +80,25 @@ async def on_interaction(interaction: discord.Interaction):
 
     if seçilen_görünüm == soru.answer_id:
         kullanıcı_cevapları[kullanıcı_kimliği]["Doğru Cevaplar"] += 1
-        await interaction.response.send_message("Doğru bildin.", ephemeral = True)
-
+        await interaction.response.send_message("Doğru bildin.", ephemeral=True)
     else:
         kullanıcı_cevapları[kullanıcı_kimliği]["Yanlış Cevaplar"] += 1
         await interaction.response.send_message(
             f"Yanlış bildin. Doğru cevap {soru.secenekler[soru.answer_id]} olacaktı.",
-            ephemeral = True
+            ephemeral=True
         )
 
     kullanıcı_yanıtları[kullanıcı_kimliği] += 1
 
     if kullanıcı_yanıtları[kullanıcı_kimliği] >= len(kullanıcı_soruları[kullanıcı_kimliği]):
         skor = kullanıcı_cevapları[kullanıcı_kimliği]
-
         await interaction.followup.send(
             f"Sorular bitti.\nSoru Sayısı: {len(kullanıcı_soruları[kullanıcı_kimliği])}\nDoğru Cevaplar: {skor['Doğru Cevaplar']}\nYanlış Cevaplar: {skor['Yanlış Cevaplar']}",
-            ephemeral = True
+            ephemeral=True
         )
-
         del kullanıcı_yanıtları[kullanıcı_kimliği]
         del kullanıcı_soruları[kullanıcı_kimliği]
         del kullanıcı_cevapları[kullanıcı_kimliği]
-
     else:
         await Kullanıcıya_Soru_Gönder(interaction.channel, kullanıcı_kimliği)
 
@@ -139,8 +135,8 @@ async def on_message(message):
     elif re.fullmatch(r"\s*(p+a+r+o+l+a|s+i+f+r+e|ş+i+f+r+e)(\s*(a+t|b+e+l+i+r+l+e|g+ö+n+d+e+r|y+o+l+l+a))?\s*(\?*)\s*", cleaned_content):
         await Beğenme(message,Parola_Gönder(25))
 
-    elif re.fullmatch(r"\s*e+\s*m+\s*o+\s*j+\s*i+(\s*(a+t|g+ö+n+d+e+r|y+o+l+l+a))?\s*(\?*)\s*", cleaned_content):
-        await Beğenme(message,Emoji_Gönder())
+    elif re.fullmatch(r"\b(e+m+o+j+i|yüz|gülen yüz)\b(\s*(at|gönder|yolla))?\s*\?*", cleaned_content, re.IGNORECASE):
+        await Beğenme(message, Emoji_Gönder())
 
     elif re.fullmatch(r"(t+a+r+i+h|t+a+r+i+h+i|t+a+r+i+h\s*g+ö+s+t+e+r|t+a+r+i+h\s*g+ö+s+t+e+r+i|t+a+r+i+h\s*g+o+s+t+e+r|t+a+r+i+h\s*g+o+s+t+e+r+i|t+a+r+i+h\s*n+e|t+a+r+i+h+i\s*s+ö+y+l+e|t+a+r+i+h+i\s*s+o+y+l+e|t+a+r+i+h\s*s+ö+y+l+e|t+a+r+i+h\s*s+o+y+l+e|hangi\s+t+a+r+i+h+t+e+y+i+z)\s*\?*", cleaned_content, re.IGNORECASE):
         şimdi = datetime.now(pytz.timezone("Europe/Istanbul"))
@@ -339,7 +335,7 @@ async def on_message(message):
 
         await Beğenme(message,f"Ay: {ay}")
 
-    elif re.fullmatch(r"\s*("r"g+ü+n|g+ü+n+ü\s*s+ö+y+l+e|b+u+g+ü+n+ü\s*s+ö+y+l+eg+ü+n+ü\s*s+o+y+l+e|b+u+g+ü+n+ü\s*s+o+y+l+e|g+ü+n\s*n+e|g+ü+n+l+e+r+d+e+n\s*n+e|b+u+g+ü+n\s+g+ü+n+l+e+r+d+e+n\s+n+e|b+u+g+ü+n\s+h+a+n+g+i\s+g+ü+n|b+u+g+ü+n\s+g+ü+n+l+e+r+d+e+n\s+h+a+n+g+i+s+i|g+ü+n+l+e+r+d+e+n\s+h+a+n+g+i+s+i|g+ü+n+l+e+r+d+e+n\s+h+a+n+g+i\s+g+ü+n|g+ü+n+l+e+r+d+e+n\s+n+e|hafta+n+ı+n\s+h+a+n+g+i\s+g+ü+n|hafta+n+ı+n\s+h+a+n+g+i\s+g+ü+n+d+e+y+i+z|hafta+n+ı+n\s+g+ü+n+l+e+r+i+n\s+h+a+n+g+i+s+i|hafta+n+ı+n\s+g+ü+n+l+e+r+i+n\s+h+a+n+g+i+s+i+n+d+e+y+i+z\s*\?*\s*", cleaned_content, re.IGNORECASE):
+    elif re.fullmatch(r"\s*(bugün|gün(ü)?|hafta(nı)?n( hangi gün)?|günlerden hangi)\s*(söyle|soyle)?\s*\?*\s*", cleaned_content, re.IGNORECASE):
         şimdi = datetime.now(pytz.timezone("Europe/Istanbul"))
         günler = ["Pazartesi", "Salı", "Çarşamba", "Perşembe", "Cuma", "Cumartesi", "Pazar"]
         gün = günler[şimdi.weekday()]
@@ -388,28 +384,7 @@ async def on_message(message):
         if random.randint(1, 2) == 1:
             await message.add_reaction("👍🏻")
 
-    elif re.search(r"\s*(?:ç+e+v+i+r+|c+e+v+i+r+|a+r+a+p+ç+a\s*(?:ç+e+v+i+r+|c+e+v+i+r+|y+a+z+)?|a<arapçaya\s*(?:ç+e+v+i+r+|c+e+v+i+r+)|arapça\s*(?:ç+e+v+i+r+|c+e+v+i+r+|a+t|g+ö+n+d+e+r)|arapçanın\s*(?:a+t|g+ö+n+d+e+r)))\s*[:=]?\s*", cleaned_content, re.IGNORECASE):
-        text_to_translate = re.sub(r"\s*(?:ç+e+v+i+r+|c+e+v+i+r+|a+r+a+p+ç+a\s*(?:ç+e+v+i+r+|c+e+v+i+r+|y+a+z+)?|arapçaya\s*(?:ç+e+v+i+r+|c+e+v+i+r+)|arapça\s*(?:ç+e+v+i+r+|c+e+v+i+r+|a+t|g+ö+n+d+e+r)|arapçanın\s*(?:a+t|g+ö+n+d+e+r)))\s*[:=]?\s*", "", cleaned_content, flags=re.IGNORECASE)
-        Metin_Analizi(text_to_translate, message.author.name)
-        görüntü = Düğme_Görünümleri(message.author.name)
-
-        await message.channel.send("Mesajı arapçaya çevirmek için lütfen aşağıdaki düğmeye basınız.", view = görüntü)
-
-        if random.randint(1, 2) == 1:
-            await message.add_reaction("👍🏻")
-
     else:
         await message.channel.send("Mesajınız anlaşılamadı.")
-
-class Düğme_Görünümleri(discord.ui.View):
-    def __init__(self, owner):
-        super().__init__(timeout = None)
-        self.owner = owner
-
-    @discord.ui.button(label = "Arapçaya Çevir", style=discord.ButtonStyle.primary)
-    async def Arapçaya_Çevirme(self, button: discord.ui.Button, interaction: discord.Interaction):
-        obj = Metin_Analizi.memory[self.owner][-1]
-
-        await interaction.response.send_message(obj.translation_ar, ephemeral = True)
 
 bot.run(TOKEN)

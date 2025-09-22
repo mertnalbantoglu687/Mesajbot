@@ -1,8 +1,7 @@
 from datetime import datetime, timedelta
-from translate import Translator
 from collections import defaultdict
-import sqlite3
 import discord
+import sqlite3
 import random
 import requests
 import pytz
@@ -97,22 +96,6 @@ sorular = [
     Sorular("Türk alfabesinde kaç harf vardır?", 0, "29", "26", "32"),
 ]
 
-class Metin_Analizi:
-    memory = defaultdict(list)
-
-    def __init__(self, text, owner):
-        Metin_Analizi.memory[owner].append(self)
-        self.text = text
-        self.translation_ar = self.__translate(self.text, "tr", "ar")
-        self.response = "Mesajınız anlaşılamadı."
-
-    def __translate(self, text, from_lang, to_lang):
-        try:
-            translator = Translator(to_lang = to_lang, from_lang = from_lang)
-            return translator.translate(text)
-        except:
-            return "Mesajınız anlaşılamadı."
-
 class Hesap_Makinesi(discord.ui.View):
     def __init__(self):
         super().__init__(timeout=None)
@@ -190,163 +173,13 @@ class Hesap_Makinesi(discord.ui.View):
     async def Bölü(self, button, interaction: discord.Interaction):
         self.input_text += "/"; await self.Yazı(interaction)
 
-skills = [(_,) for _ in ["Python", "SQL", "API", "Discord"]]
+beceriler = [(_,) for _ in ["Python", "SQL", "API", "Discord"]]
 durumlar = [(_,) for _ in [
     "Prototip Oluşturma",
     "Geliştirme Aşamasında",
     "Tamamlandı, kullanıma hazır",
     "Güncellendi",
     "Tamamlandı, ancak bakımı yapılmadı"
-]]
-
-from datetime import datetime, timedelta
-from translate import Translator
-from collections import defaultdict
-import sqlite3
-import discord
-import random
-import requests
-import pytz
-
-VERİ_TABANI = "Veri_Tabanı.db"
-
-# Parola Oluşturma Fonksiyonu
-def Parola_Gönder(pass_length):
-    karakterler = "é!'£^#+$%½&/=?\*_-@¨¨~~æß´`,;<>.:AaBbCcÇçDdEeFfGgĞğHhIıİiJjKkLlMmNnOoÖöPpQqRrSsŞşTtUuÜüVvWwXxYyZz1234567890"
-    parola = "".join(random.choice(karakterler) for _ in range(pass_length))
-    return "Parola: " + parola
-
-# Emoji Gönderme Fonksiyonu
-def Emoji_Gönder():
-    return "\U0001f642"
-
-# Sorular Sınıfı
-class Sorular:
-    def __init__(self, text, answer_id, *secenekler):
-        self.text = text
-        self.answer_id = answer_id
-        self.secenekler = secenekler
-
-    def Düğmeler(self):
-        düğmeler = []
-        for a, secenek in enumerate(self.secenekler):
-            button = discord.ui.Button(
-                label=secenek,
-                style=discord.ButtonStyle.primary,
-                custom_id=f"answer_{a}"
-            )
-            düğmeler.append(button)
-        return düğmeler
-
-# Sorular Listesi (Örnek)
-sorular = [
-    Sorular("Dünya'nın uydusu nedir?", 2, "Jüpiter", "Mars", "Ay"),
-    Sorular("Hangi gezegen halkalara sahiptir?", 0, "Satürn", "Mars", "Venüs"),
-    Sorular("Dünya'nın kendi etrafında dönme süresi kaç saattir?", 1, "5 Saat", "24 Saat", "12 Saat"),
-    # ... diğer sorular burada devam eder ...
-]
-
-# Metin Analizi Sınıfı
-class Metin_Analizi:
-    memory = defaultdict(list)
-
-    def __init__(self, text, owner):
-        Metin_Analizi.memory[owner].append(self)
-        self.text = text
-        self.translation_ar = self.__translate(self.text, "tr", "ar")
-        self.response = "Mesajınız anlaşılamadı."
-
-    def __translate(self, text, from_lang, to_lang):
-        try:
-            translator = Translator(to_lang=to_lang, from_lang=from_lang)
-            return translator.translate(text)
-        except:
-            return "Mesajınız anlaşılamadı."
-
-# Hesap Makinesi Sınıfı
-class Hesap_Makinesi(discord.ui.View):
-    def __init__(self):
-        super().__init__(timeout=None)
-        self.input_text = ""
-
-    async def Yazı(self, interaction: discord.Interaction):
-        content_to_send = f"```{self.input_text}```" if self.input_text else ""
-        await interaction.response.edit_message(content=content_to_send, view=self)
-
-    @discord.ui.button(label="1", style=discord.ButtonStyle.primary, row=0)
-    async def Bir(self, button, interaction):
-        self.input_text += "1"; await self.Yazı(interaction)
-
-    @discord.ui.button(label="2", style=discord.ButtonStyle.primary, row=0)
-    async def İki(self, button, interaction):
-        self.input_text += "2"; await self.Yazı(interaction)
-
-    @discord.ui.button(label="3", style=discord.ButtonStyle.primary, row=0)
-    async def Üç(self, button, interaction):
-        self.input_text += "3"; await self.Yazı(interaction)
-
-    @discord.ui.button(label="+", style=discord.ButtonStyle.success, row=0)
-    async def Artı(self, button, interaction):
-        self.input_text += "+"; await self.Yazı(interaction)
-
-    @discord.ui.button(label="4", style=discord.ButtonStyle.primary, row=1)
-    async def Dört(self, button, interaction):
-        self.input_text += "4"; await self.Yazı(interaction)
-
-    @discord.ui.button(label="5", style=discord.ButtonStyle.primary, row=1)
-    async def Beş(self, button, interaction):
-        self.input_text += "5"; await self.Yazı(interaction)
-
-    @discord.ui.button(label="6", style=discord.ButtonStyle.primary, row=1)
-    async def Altı(self, button, interaction):
-        self.input_text += "6"; await self.Yazı(interaction)
-
-    @discord.ui.button(label="-", style=discord.ButtonStyle.success, row=1)
-    async def Eksi(self, button, interaction):
-        self.input_text += "-"; await self.Yazı(interaction)
-
-    @discord.ui.button(label="7", style=discord.ButtonStyle.primary, row=2)
-    async def Yedi(self, button, interaction):
-        self.input_text += "7"; await self.Yazı(interaction)
-
-    @discord.ui.button(label="8", style=discord.ButtonStyle.primary, row=2)
-    async def Sekiz(self, button, interaction):
-        self.input_text += "8"; await self.Yazı(interaction)
-
-    @discord.ui.button(label="9", style=discord.ButtonStyle.primary, row=2)
-    async def Dokuz(self, button, interaction):
-        self.input_text += "9"; await self.Yazı(interaction)
-
-    @discord.ui.button(label="x", style=discord.ButtonStyle.success, row=2)
-    async def Çarpı(self, button, interaction):
-        self.input_text += "*"; await self.Yazı(interaction)
-
-    @discord.ui.button(label="0", style=discord.ButtonStyle.primary, row=3)
-    async def Sıfır(self, button, interaction):
-        self.input_text += "0"; await self.Yazı(interaction)
-
-    @discord.ui.button(label="Sıfırla", style=discord.ButtonStyle.danger, row=3)
-    async def Sıfırla(self, button, interaction):
-        self.input_text = ""; await self.Yazı(interaction)
-
-    @discord.ui.button(label="=", style=discord.ButtonStyle.primary, row=3)
-    async def Eşittir(self, button, interaction):
-        try:
-            self.input_text = str(eval(self.input_text))
-        except:
-            self.input_text = "Mesajınız Anlaşılamadı."
-        await self.Yazı(interaction)
-
-    @discord.ui.button(label="÷", style=discord.ButtonStyle.success, row=3)
-    async def Bölü(self, button, interaction):
-        self.input_text += "/"; await self.Yazı(interaction)
-
-skills = [(_,) for _ in ["Python", "SQL", "API", "Discord"]]
-durumlar = [(_,) for _ in [
-    "Prototip Yapılıyor.",
-    "Prototip Geliştirme Aşamasında.",
-    "Prototip Tamamlandı.",
-    "Prototip Güncellendi."
 ]]
 
 class Veritabani_Yöneticisi:
@@ -395,7 +228,7 @@ class Veritabani_Yöneticisi:
             return imleç.fetchall()
 
     def Varsayılanı_Ekle(self):
-        self.__Çoklu_Ekle("INSERT INTO beceriler (beceri_ismi) VALUES(?)", skills)
+        self.__Çoklu_Ekle("INSERT INTO beceriler (beceri_ismi) VALUES(?)", beceriler)
         self.__Çoklu_Ekle("INSERT INTO durum (durum_ismi) VALUES(?)", durumlar)
 
     def Proje_Ekle(self, kullanıcı_numarası, proje_ismi, açıklama, link, durum):

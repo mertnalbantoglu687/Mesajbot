@@ -339,7 +339,7 @@ async def on_message(message):
 
         await Beğenme(message,f"Ay: {ay}")
 
-    elif re.fullmatch(r"\s*(g+ü+n|g+ü+n+ü\s*s+ö+y+l+e|b+u+g+ü+n+ü\s*s+ö+y+l+e|g+ü+n+ü\s*s+o+y+l+e|b+u+g+ü+n+ü\s*s+o+y+l+e|g+ü+n\s*n+e|g+ü+n+l+e+r+d+e+n\s*n+e|b+u+g+ü+n\s+g+ü+n+l+e+r+d+e+n\s+n+e|b+u+g+ü+n\s+h+a+n+g+i\s+g+ü+n|b+u+g+ü+n\s+g+ü+n+l+e+r+d+e+n\s+h+a+n+g+i+s+i|g+ü+n+l+e+r+d+e+n\s+h+a+n+g+i+s+i|g+ü+n+l+e+r+d+e+n\s+h+a+n+g+i\s+g+ü+n|g+ü+n+l+e+r+d+e+n\s+n+e)\s*\?*\s*", cleaned_content, re.IGNORECASE):
+    elif re.fullmatch(r"\s*("r"g+ü+n|g+ü+n+ü\s*s+ö+y+l+e|b+u+g+ü+n+ü\s*s+ö+y+l+eg+ü+n+ü\s*s+o+y+l+e|b+u+g+ü+n+ü\s*s+o+y+l+e|g+ü+n\s*n+e|g+ü+n+l+e+r+d+e+n\s*n+e|b+u+g+ü+n\s+g+ü+n+l+e+r+d+e+n\s+n+e|b+u+g+ü+n\s+h+a+n+g+i\s+g+ü+n|b+u+g+ü+n\s+g+ü+n+l+e+r+d+e+n\s+h+a+n+g+i+s+i|g+ü+n+l+e+r+d+e+n\s+h+a+n+g+i+s+i|g+ü+n+l+e+r+d+e+n\s+h+a+n+g+i\s+g+ü+n|g+ü+n+l+e+r+d+e+n\s+n+e|hafta+n+ı+n\s+h+a+n+g+i\s+g+ü+n|hafta+n+ı+n\s+h+a+n+g+i\s+g+ü+n+d+e+y+i+z|hafta+n+ı+n\s+g+ü+n+l+e+r+i+n\s+h+a+n+g+i+s+i|hafta+n+ı+n\s+g+ü+n+l+e+r+i+n\s+h+a+n+g+i+s+i+n+d+e+y+i+z\s*\?*\s*", cleaned_content, re.IGNORECASE):
         şimdi = datetime.now(pytz.timezone("Europe/Istanbul"))
         günler = ["Pazartesi", "Salı", "Çarşamba", "Perşembe", "Cuma", "Cumartesi", "Pazar"]
         gün = günler[şimdi.weekday()]

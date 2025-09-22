@@ -30,6 +30,8 @@ async def Beğenme(message, response_text):
         await message.add_reaction("👍🏻")
 
 def Güvenli_Değerlendirme(expr):
+    import ast, operator
+
     operatörler = {
         ast.Add: operator.add,
         ast.Sub: operator.sub,
@@ -39,8 +41,8 @@ def Güvenli_Değerlendirme(expr):
     }
 
     def Değerlendirme(sayı):
-        if isinstance(sayı, ast.Num):
-            return sayı.n
+        if isinstance(sayı, ast.Constant):
+            return sayı.value
 
         elif isinstance(sayı, ast.BinOp):
             return operatörler[type(sayı.op)](Değerlendirme(sayı.left), Değerlendirme(sayı.right))
@@ -48,9 +50,12 @@ def Güvenli_Değerlendirme(expr):
         elif isinstance(sayı, ast.UnaryOp):
             return operatörler[type(sayı.op)](Değerlendirme(sayı.operand))
 
-    sayı = ast.parse(expr, mode="eval").body
+        else:
+            raise ValueError("Geçersiz ifade!")
 
+    sayı = ast.parse(expr, mode="eval").body
     return Değerlendirme(sayı)
+
 
 async def Kullanıcıya_Soru_Gönder(channel, user_id):
     soru_görünümü = kullanıcı_soruları[user_id][kullanıcı_yanıtları[user_id]]
@@ -349,7 +354,7 @@ async def on_message(message):
 
     elif re.search(r"[\d\+\-\*/xX:÷.,]+", cleaned_content):
         expression = re.sub(r"^[a-zA-Z\+\*/xX:÷]+", "", cleaned_content)
-        expression = re.sub(r"[a-zA-Z\s]", "", expression)
+        expression = re.sub(r"[a-zA-Z]", "", expression)
         expression = expression.replace("x","*").replace("X","*").replace(":", "/").replace("÷","/")
         expression = re.sub(r"(\+)+", "+", expression)
         expression = re.sub(r"(\*)+", "*", expression)
@@ -383,8 +388,8 @@ async def on_message(message):
         if random.randint(1, 2) == 1:
             await message.add_reaction("👍🏻")
 
-    elif re.search(r"\s*(?:c+e+v+i+r+|ç+e+v+i+r+|a+r+a+p+ç+a\s*(?:c+e+v+i+r+|y+a+z+)?)(?:\s*[:=]?\s*)?", cleaned_content, re.IGNORECASE):
-        text_to_translate = re.sub(r"\s*(?:c+e+v+i+r+|ç+e+v+i+r+|a+r+a+p+ç+a\s*(?:c+e+v+i+r+|y+a+z+)?)(?:\s*[:=]?\s*)?", "", cleaned_content, flags=re.IGNORECASE)
+    elif re.search(r"\s*(?:ç+e+v+i+r+|c+e+v+i+r+|a+r+a+p+ç+a\s*(?:ç+e+v+i+r+|c+e+v+i+r+|y+a+z+)?|a<arapçaya\s*(?:ç+e+v+i+r+|c+e+v+i+r+)|arapça\s*(?:ç+e+v+i+r+|c+e+v+i+r+|a+t|g+ö+n+d+e+r)|arapçanın\s*(?:a+t|g+ö+n+d+e+r)))\s*[:=]?\s*", cleaned_content, re.IGNORECASE):
+        text_to_translate = re.sub(r"\s*(?:ç+e+v+i+r+|c+e+v+i+r+|a+r+a+p+ç+a\s*(?:ç+e+v+i+r+|c+e+v+i+r+|y+a+z+)?|arapçaya\s*(?:ç+e+v+i+r+|c+e+v+i+r+)|arapça\s*(?:ç+e+v+i+r+|c+e+v+i+r+|a+t|g+ö+n+d+e+r)|arapçanın\s*(?:a+t|g+ö+n+d+e+r)))\s*[:=]?\s*", "", cleaned_content, flags=re.IGNORECASE)
         Metin_Analizi(text_to_translate, message.author.name)
         görüntü = Düğme_Görünümleri(message.author.name)
 

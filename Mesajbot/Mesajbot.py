@@ -335,7 +335,7 @@ async def on_message(message):
 
         await Beğenme(message,f"Ay: {ay}")
 
-    elif re.fullmatch(r"\s*(bugün|gün(ü)?|hafta(nı)?n( hangi gün)?|günlerden hangi)\s*(söyle|soyle)?\s*\?*\s*", cleaned_content, re.IGNORECASE):
+    elif re.search(r"\b(bugün|gün(ü)?|hafta(nı)?n( hangi gün(ü)?| hangi günündeyiz)?|günlerden hangi|hangi gündeyiz|gün ne)\b\s*(söyle|soyle)?\s*\?*", cleaned_content, re.IGNORECASE):
         şimdi = datetime.now(pytz.timezone("Europe/Istanbul"))
         günler = ["Pazartesi", "Salı", "Çarşamba", "Perşembe", "Cuma", "Cumartesi", "Pazar"]
         gün = günler[şimdi.weekday()]

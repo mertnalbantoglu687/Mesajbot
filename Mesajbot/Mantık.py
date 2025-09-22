@@ -174,12 +174,11 @@ class Hesap_Makinesi(discord.ui.View):
         self.input_text += "/"; await self.Yazı(interaction)
 
 beceriler = [(_,) for _ in ["Python", "SQL", "API", "Discord"]]
+
 durumlar = [(_,) for _ in [
-    "Prototip Oluşturma",
-    "Geliştirme Aşamasında",
-    "Tamamlandı, kullanıma hazır",
-    "Güncellendi",
-    "Tamamlandı, ancak bakımı yapılmadı"
+    "Prototip yapılmaya başlandı.",
+    "Prototip geliştirme aşamasında.",
+    "Prototip tamamlandı."
 ]]
 
 class Veritabani_Yöneticisi:

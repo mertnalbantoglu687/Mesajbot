@@ -6,29 +6,27 @@ import requests
 import calendar
 import pytz
 
-def Parola_Gönder(parola_uzunluğu):
-    karakterler = "é!'£^#+$%½&/?\*_-@¨¨~~æß´`<>AaBbCcÇçDdEeFfGgĞğHhIıİiJjKkLlMmNnOoÖöPpRrSsŞşTtUuÜüVvYyZz1234567890"
-    parola = ""
-    for a in range(parola_uzunluğu):
-        parola += random.choice(karakterler)
-    sonuç = "Parola: " + parola
-    return sonuç
+def Parola_Gönder(en_az_uzunluk, en_çok_uzunluk):
+    karakterler = "é!'^+%½&/?*_-@´`<>AaBbCcÇçDdEeFfGgĞğHhIıİiJjKkLlMmNnOoÖöPpRrSsŞşTtUuÜüVvYyZz1234567890"
+    parola_uzunluğu = random.randint(en_az_uzunluk, en_çok_uzunluk)
+    parola = "".join(random.choice(karakterler) for _ in range(parola_uzunluğu))
+    return "Parola: " + parola
 
 def Emoji_Gönder():
     emoji = "\U0001f642"
     return random.choice(emoji)
 
 class Sorular:
-    def __init__(self, text, answer_id, *secenekler):
+    def __init__(self, text, answer_id, *seçenekler):
         self.text = text
         self.answer_id = answer_id
-        self.secenekler = secenekler
+        self.seçenekler = seçenekler
 
     def Düğmeler(self):
         düğmeler = []
-        for a, secenek in enumerate(self.secenekler):
+        for a, seçenek in enumerate(self.seçenekler):
             button = discord.ui.Button(
-                label = secenek,
+                label = seçenek,
                 style = discord.ButtonStyle.primary,
                 custom_id = f"answer_{a}"
             )

@@ -355,25 +355,37 @@ async def on_message(message):
         await Beğenme(message, f"Saat: {şimdi.strftime('%H:%M:%S')}")
 
     elif re.search(r"[\d\+\-\*/xX:÷×.,]+", cleaned_content):
-        ayırıcı_işaret = "," if "," in cleaned_content else "."
-
-        ifade = re.sub(r"[^0-9\+\-\*/xX:÷×.,]", "", cleaned_content)
+        ifade = re.sub(r"[^0-9\+\-\*/xX:÷×.,\(\)]", "", cleaned_content)
         ifade = ifade.replace("x", "*").replace("X", "*").replace("×", "*")
         ifade = ifade.replace(":", "/").replace("÷", "/")
-
-        if ayırıcı_işaret == ",":
-            ifade = ifade.replace(",", ".")
-
+        ifade = re.sub(r'(?<=\d),(?=\d)', '.', ifade)
         ifade = re.sub(r"(\+)+", "+", ifade)
         ifade = re.sub(r"(\*)+", "*", ifade)
         ifade = re.sub(r"(/)+", "/", ifade)
 
+        nokta = bool(re.search(r'\d\.\d', cleaned_content))
+        virgül = bool(re.search(r'\d,\d', cleaned_content))
+
         sonuç = Güvenli_Değerlendirme(ifade)
 
-        if isinstance(sonuç, float) and sonuç.is_integer():
-            sonuç = int(sonuç)
+        if nokta and virgül:
+            ayırma_işareti = random.choice([".", ","])
+        elif virgül:
+            ayırma_işareti = ","
+        elif nokta:
+            ayırma_işareti = "."
+
+        if isinstance(sonuç, float):
+            sonuç = round(sonuç, 6)
+
+            if sonuç.is_integer():
+                sonuç = int(sonuç)
+            else:
+                sonuç = f"{sonuç:.6f}".rstrip("0").rstrip(".")
+                if ayırma_işareti == ",":
+                    sonuç = sonuç.replace(".", ",")
         else:
-            sonuç = str(sonuç).replace(".", ayırıcı_işaret)
+            sonuç = str(sonuç)
 
         await Beğenme(message, f"Sonuç: {sonuç}")
 

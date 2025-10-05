@@ -355,9 +355,15 @@ async def on_message(message):
         await Beğenme(message, f"Saat: {şimdi.strftime('%H:%M:%S')}")
 
     elif re.search(r"[\d\+\-\*/xX:÷×.,]+", cleaned_content):
+        ayırıcı_işaret = "," if "," in cleaned_content else "."
+
         ifade = re.sub(r"[^0-9\+\-\*/xX:÷×.,]", "", cleaned_content)
         ifade = ifade.replace("x", "*").replace("X", "*").replace("×", "*")
         ifade = ifade.replace(":", "/").replace("÷", "/")
+
+        if ayırıcı_işaret == ",":
+            ifade = ifade.replace(",", ".")
+
         ifade = re.sub(r"(\+)+", "+", ifade)
         ifade = re.sub(r"(\*)+", "*", ifade)
         ifade = re.sub(r"(/)+", "/", ifade)
@@ -366,6 +372,8 @@ async def on_message(message):
 
         if isinstance(sonuç, float) and sonuç.is_integer():
             sonuç = int(sonuç)
+        else:
+            sonuç = str(sonuç).replace(".", ayırıcı_işaret)
 
         await Beğenme(message, f"Sonuç: {sonuç}")
 

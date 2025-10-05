@@ -204,3 +204,4 @@ class Hesap_Makinesi(discord.ui.View):
     @discord.ui.button(label = "÷", style=discord.ButtonStyle.success, row = 3)
     async def Bölü(self, button, interaction: discord.Interaction):
         self.input_text += "/"; await self.Yazı(interaction)
+

@@ -354,13 +354,14 @@ async def on_message(message):
 
         await Beğenme(message, f"Saat: {şimdi.strftime('%H:%M:%S')}")
 
-    elif re.search(r"[\d\+\-\*/xX:÷.,]+", cleaned_content):
-        ifade = re.sub(r"^[a-zA-Z\+\*/xX:÷]+", "", cleaned_content)
-        ifade = re.sub(r"[a-zA-Z]", "", ifade)
-        ifade = ifade.replace("x","*").replace("X","*").replace(":", "/").replace("÷","/")
+    elif re.search(r"[\d\+\-\*/xX:÷×.,]+", cleaned_content):
+        ifade = re.sub(r"[^0-9\+\-\*/xX:÷×.,]", "", cleaned_content)
+        ifade = ifade.replace("x", "*").replace("X", "*").replace("×", "*")
+        ifade = ifade.replace(":", "/").replace("÷", "/")
         ifade = re.sub(r"(\+)+", "+", ifade)
         ifade = re.sub(r"(\*)+", "*", ifade)
         ifade = re.sub(r"(/)+", "/", ifade)
+
         sonuç = Güvenli_Değerlendirme(ifade)
 
         if isinstance(sonuç, float) and sonuç.is_integer():

@@ -130,7 +130,7 @@ async def on_message(message):
         await Beğenme(message, "Benim ismim Mesajbot.")
 
     elif re.fullmatch(r"\s*s+e+n+i+\s*(k+i+m|y+a+p+a+n|y+ı+z+ı+l+m+a+y+a+n|y+ı+z+ı+l+m+a+y+a+n+ı+n)\s*(a+d+ı|a+d+i|i+s+m+i)?\s*(n+e)?\s*\??\s*", cleaned_content, re.IGNORECASE):
-        await Beğenme(message, "Beni Mert NALBANTOĞLU yazılımladı.")
+        await Beğenme(message, "Beni Mert Nalbantoğlu yazılımladı.")
 
     elif re.fullmatch(r"\s*s+\s*e+\s*n+\s*\s*n+\s*e+\s*s+\s*i+\s*n\s*(\?*)\s*", cleaned_content, re.IGNORECASE):
         await Beğenme(message, "Ben bir yapay zekayım.")
@@ -141,7 +141,7 @@ async def on_message(message):
     elif re.fullmatch(r"\s*(p+a+r+o+l+a|s+i+f+r+e|ş+i+f+r+e)(\s*(a+t|b+e+l+i+r+l+e|g+ö+n+d+e+r|y+o+l+l+a))?\s*(\?*)\s*", cleaned_content):
         await Beğenme(message, Parola_Gönder(25))
 
-    elif re.fullmatch(r"\b(e+m+o+j+i|yüz|gülen yüz|surat)\b(\s*(at|gönder|yolla))?\s*\?*", cleaned_content, re.IGNORECASE):
+    elif re.fullmatch(r"\b(e+m+o+j+i|yüz|gülen\s*yüz|surat)\b(\s*(at|gönder|yolla))?\s*\?*", cleaned_content, re.IGNORECASE):
         await Beğenme(message, Emoji_Gönder())
 
     elif re.fullmatch(r"(t+a+r+i+h|t+a+r+i+h+i|t+a+r+i+h\s*g+ö+s+t+e+r|t+a+r+i+h\s*g+ö+s+t+e+r+i|t+a+r+i+h\s*g+o+s+t+e+r|t+a+r+i+h\s*g+o+s+t+e+r+i|t+a+r+i+h\s*n+e|t+a+r+i+h+i\s*s+ö+y+l+e|t+a+r+i+h+i\s*s+o+y+l+e|t+a+r+i+h\s*s+ö+y+l+e|t+a+r+i+h\s*s+o+y+l+e|hangi\s+t+a+r+i+h+t+e+y+i+z)\s*\?*", cleaned_content, re.IGNORECASE):

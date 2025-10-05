@@ -24,7 +24,7 @@ kullanıcı_cevapları = {}
 async def on_ready():
     print("Mesajbot Açıldı.")
 
-async def Beğenme(message, response_text):
+async def Beğenme(message,  response_text):
     await message.channel.send(response_text)
     if random.randint(1, 2) == 1:
         await message.add_reaction("👍🏻")
@@ -45,17 +45,23 @@ def Güvenli_Değerlendirme(expr):
             return sayı.value
 
         elif isinstance(sayı, ast.BinOp):
-            return operatörler[type(sayı.op)](Değerlendirme(sayı.left), Değerlendirme(sayı.right))
+            if type(sayı.op) not in operatörler:
+                raise ValueError("Mesajınız anlaşılamadı.")
+            return operatörler[type(sayı.op)](
+                Değerlendirme(sayı.left),
+                Değerlendirme(sayı.right)
+            )
 
         elif isinstance(sayı, ast.UnaryOp):
+            if type(sayı.op) not in operatörler:
+                raise ValueError("Mesajınız anlaşılamadı.")
             return operatörler[type(sayı.op)](Değerlendirme(sayı.operand))
 
         else:
-            raise ValueError("Geçersiz ifade!")
+            raise ValueError("Mesajınız anlaşılamadı.")
 
-    sayı = ast.parse(expr, mode="eval").body
+    sayı = ast.parse(expr, mode = "eval").body
     return Değerlendirme(sayı)
-
 
 async def Kullanıcıya_Soru_Gönder(channel, user_id):
     soru_görünümü = kullanıcı_soruları[user_id][kullanıcı_yanıtları[user_id]]
@@ -65,7 +71,7 @@ async def Kullanıcıya_Soru_Gönder(channel, user_id):
     for button in soru.Düğmeler():
         görüntü.add_item(button)
 
-    await channel.send(soru.text, view=görüntü)
+    await channel.send(soru.text, view = görüntü)
 
 @bot.event
 async def on_interaction(interaction: discord.Interaction):
@@ -80,12 +86,12 @@ async def on_interaction(interaction: discord.Interaction):
 
     if seçilen_görünüm == soru.answer_id:
         kullanıcı_cevapları[kullanıcı_kimliği]["Doğru Cevaplar"] += 1
-        await interaction.response.send_message("Doğru bildin.", ephemeral=True)
+        await interaction.response.send_message("Doğru bildin.", ephemeral = True)
     else:
         kullanıcı_cevapları[kullanıcı_kimliği]["Yanlış Cevaplar"] += 1
         await interaction.response.send_message(
             f"Yanlış bildin. Doğru cevap {soru.secenekler[soru.answer_id]} olacaktı.",
-            ephemeral=True
+            ephemeral = True
         )
 
     kullanıcı_yanıtları[kullanıcı_kimliği] += 1
@@ -94,7 +100,7 @@ async def on_interaction(interaction: discord.Interaction):
         skor = kullanıcı_cevapları[kullanıcı_kimliği]
         await interaction.followup.send(
             f"Sorular bitti.\nSoru Sayısı: {len(kullanıcı_soruları[kullanıcı_kimliği])}\nDoğru Cevaplar: {skor['Doğru Cevaplar']}\nYanlış Cevaplar: {skor['Yanlış Cevaplar']}",
-            ephemeral=True
+            ephemeral = True
         )
         del kullanıcı_yanıtları[kullanıcı_kimliği]
         del kullanıcı_soruları[kullanıcı_kimliği]
@@ -112,30 +118,30 @@ async def on_message(message):
     await bot.process_commands(message)
 
     if re.fullmatch(r"\s*m+\s*e+\s*r+\s*h+\s*a+\s*b+\s*a+\s*", cleaned_content):
-        await Beğenme(message,"Sana da merhaba.")
+        await Beğenme(message, "Sana da merhaba.")
 
     elif re.fullmatch(r"\s*(n+a+s+ı+l+s+ı+n|n+a+s+i+l+s+i+n|i+y+i\s*m+i+s+i+n)\s*(\?*)\s*", cleaned_content, re.IGNORECASE):
-        await Beğenme(message,"İyiyim, sorduğun için teşekkür ederim.")
+        await Beğenme(message, "İyiyim, sorduğun için teşekkür ederim.")
 
     elif re.fullmatch(r"\s*(a+d+|a+d+ı+n?|a+d+i+n?)\s*(\s*n+e)?\s*(\?*)\s*", cleaned_content, re.IGNORECASE):
-        await Beğenme(message,"Benim Adım Mesajbot.")
+        await Beğenme(message, "Benim Adım Mesajbot.")
 
     elif re.fullmatch(r"\s*(i+s+m+ı+n?|i+s+i+m+)\s*(\s*n+e)?\s*(\?*)\s*", cleaned_content, re.IGNORECASE):
-        await Beğenme(message,"Benim ismim Mesajbot.")
+        await Beğenme(message, "Benim ismim Mesajbot.")
 
     elif re.fullmatch(r"\s*s+e+n+i+\s*(k+i+m|y+a+p+a+n|y+ı+z+ı+l+m+a+y+a+n|y+ı+z+ı+l+m+a+y+a+n+ı+n)\s*(a+d+ı|a+d+i|i+s+m+i)?\s*(n+e)?\s*\??\s*", cleaned_content, re.IGNORECASE):
-        await Beğenme(message,"Beni Mert NALBANTOĞLU yazılımladı.")
+        await Beğenme(message, "Beni Mert NALBANTOĞLU yazılımladı.")
 
     elif re.fullmatch(r"\s*s+\s*e+\s*n+\s*\s*n+\s*e+\s*s+\s*i+\s*n\s*(\?*)\s*", cleaned_content, re.IGNORECASE):
-        await Beğenme(message,"Ben bir yapay zekayım.")
+        await Beğenme(message, "Ben bir yapay zekayım.")
 
     elif re.fullmatch(r"\s*t+\s*e+\s*ş+\s*e+\s*k+\s*ü+\s*r+\s*(l+e+r+|e+d+e+r+i+m+)?\s*(\?*)\s*", cleaned_content):
-        await Beğenme(message,"Rica ederim, her zaman yanındayım. Bir sorun olduğunda sormaktan çekinme.")
+        await Beğenme(message, "Rica ederim, her zaman yanındayım. Bir sorun olduğunda sormaktan çekinme.")
 
     elif re.fullmatch(r"\s*(p+a+r+o+l+a|s+i+f+r+e|ş+i+f+r+e)(\s*(a+t|b+e+l+i+r+l+e|g+ö+n+d+e+r|y+o+l+l+a))?\s*(\?*)\s*", cleaned_content):
-        await Beğenme(message,Parola_Gönder(25))
+        await Beğenme(message, Parola_Gönder(25))
 
-    elif re.fullmatch(r"\b(e+m+o+j+i|yüz|gülen yüz)\b(\s*(at|gönder|yolla))?\s*\?*", cleaned_content, re.IGNORECASE):
+    elif re.fullmatch(r"\b(e+m+o+j+i|yüz|gülen yüz|surat)\b(\s*(at|gönder|yolla))?\s*\?*", cleaned_content, re.IGNORECASE):
         await Beğenme(message, Emoji_Gönder())
 
     elif re.fullmatch(r"(t+a+r+i+h|t+a+r+i+h+i|t+a+r+i+h\s*g+ö+s+t+e+r|t+a+r+i+h\s*g+ö+s+t+e+r+i|t+a+r+i+h\s*g+o+s+t+e+r|t+a+r+i+h\s*g+o+s+t+e+r+i|t+a+r+i+h\s*n+e|t+a+r+i+h+i\s*s+ö+y+l+e|t+a+r+i+h+i\s*s+o+y+l+e|t+a+r+i+h\s*s+ö+y+l+e|t+a+r+i+h\s*s+o+y+l+e|hangi\s+t+a+r+i+h+t+e+y+i+z)\s*\?*", cleaned_content, re.IGNORECASE):
@@ -144,7 +150,7 @@ async def on_message(message):
         ay = f"{şimdi.month:02}"
         yıl = şimdi.year
 
-        await Beğenme(message,f"Tarih: {gün}.{ay}.{yıl}")
+        await Beğenme(message, f"Tarih: {gün}.{ay}.{yıl}")
 
     elif re.fullmatch(r"\s*(hangi\s+mevsimdeyiz|mevsimimiz\s*ne|mevsim\s*ne|mevsim|mevsimimiz|mevsimi\s*(?:söyle|soyle)|mevsim\s*(?:söyle|soyle)|mevsimlerden\s*hangisindeyiz|mevsimlerden\s*ne|mevsimlerden\s*hangisindeyiz|mevsimlerden\s*hangisi|bu\s+mevsim\s*ne)\s*\?*\s*",cleaned_content, re.IGNORECASE):
         şimdi = datetime.now(pytz.timezone("Europe/Istanbul"))
@@ -162,7 +168,7 @@ async def on_message(message):
         elif ay_numarası in [12, 1, 2]:
             mevsim = "Kış"
 
-        await Beğenme(message,f"Mevsim: {mevsim}")
+        await Beğenme(message, f"Mevsim: {mevsim}")
 
     elif re.fullmatch(r"(kaçıncı\s+mevsimdeyiz|mevsimimiz\s+kaçıncı\s+mevsim|bu\s+mevsim\s+kaçıncı\s+mevsim|mevsimlerden\s+kaçıncı\s+mevsimdeyiz|mevsimlerden\s+kaçıncıdayız)\s*\?*", cleaned_content, re.IGNORECASE):
         şimdi = datetime.now(pytz.timezone("Europe/Istanbul"))
@@ -180,62 +186,62 @@ async def on_message(message):
         elif ay_numarası in [12, 1, 2]:
             mevsim_numarası = 4
 
-        await Beğenme(message,f"{mevsim_numarası}. mevsimdeyiz.")
+        await Beğenme(message, f"{mevsim_numarası}. mevsimdeyiz.")
 
     elif re.fullmatch(r"\s*(kaçıncı\s+yıldayız|kaç\s+yıl(?:ındayız|ındayız\s*söyle|ındayız\s*soyle)?|hangi\s+yıldayız|yılımız\s*ne|yıl(?:ı|ı)?\s*(?:söyle|soyle)?|yılımızı\s*(?:söyle|soyle)?|yıllardan\s+ne|yıllardan\s+hangi\s+yıldayız|yıllardan\s+kaçıncıdayız|yıllardan\s+kaçıncı\s+yıldayız)\s*\?*\s*", cleaned_content, re.IGNORECASE):
         şimdi = datetime.now(pytz.timezone("Europe/Istanbul"))
         yıl = şimdi.year
 
-        await Beğenme(message,f"Yıl: {yıl}")
+        await Beğenme(message, f"Yıl: {yıl}")
 
     elif re.fullmatch(r"\s*(kaçıncı\s+aydayız|kaçıncı\s+aydayız\s*(?:söyle|soyle)?|aylardan\s+kaçıncı\s+aydayız|aylardan\s+kaçıncıdayız)\s*\?*\s*", cleaned_content, re.IGNORECASE):
         şimdi = datetime.now(pytz.timezone("Europe/Istanbul"))
         ay = şimdi.month
 
-        await Beğenme(message,f"{ay}. aydayız.")
+        await Beğenme(message, f"{ay}. aydayız.")
 
     elif re.fullmatch(r"\s*(?:bu\s+)?(bu\s+haftanın\s+kaçıncı\s+gün(ü)?|bugün\s+haftanın\s+kaçıncı\s+günü|haftanın\s+kaçıncı\s+gün(ü)?n(d)eyiz|haftanın\s+günlerinden\s+kaçıncıdayız|haftanın\s+günlerinden\s+kaçıncı\s+gündeyiz|bu\s+haftanın\s+kaçıncı\s+günündeyiz)\s*\?*\s*", cleaned_content, re.IGNORECASE):
         şimdi = datetime.now(pytz.timezone("Europe/Istanbul"))
         gün = şimdi.isoweekday()
 
-        await Beğenme(message,f"Haftanın {gün}. günündeyiz.")
+        await Beğenme(message, f"Haftanın {gün}. günündeyiz.")
 
     elif re.fullmatch(r"\s*(?:bu\s+)?(bugün\s+)?(ay(ın)?|ayın)\s+kaçıncı\s+gün(ü)?(ndeyiz)?|ayın\s+günlerinden\s+kaçıncıdayız|ayın\s+günlerinden\s+kaçıncı\s+gün(ü)?d?eyiz\s*\?*\s*", cleaned_content, re.IGNORECASE):
         şimdi = datetime.now(pytz.timezone("Europe/Istanbul"))
         gün = şimdi.day
 
-        await Beğenme(message,f"Ayın {gün}. günündeyiz.")
+        await Beğenme(message, f"Ayın {gün}. günündeyiz.")
 
     elif re.fullmatch(r"\s*(?:bu\s+)?ay\s+kaç\s+gün( olacak| sürecek)?|bulunduğumuz\s+ay\s+kaç\s+gün|olduğumuz\s+ay\s+kaç\s+gün|içinde\s+bulunduğumuz\s+ay\s+kaç\s+gün|içerisinde\s+bulunduğumuz\s+ay\s+kaç\s+gün|bu\s+ayın\s+günleri\s+kaç\s+tane\s*\?*\s*", cleaned_content, re.IGNORECASE):
         şimdi = datetime.now(pytz.timezone("Europe/Istanbul"))
-        gün = (datetime(şimdi.year, şimdi.month % 12 + 1, 1) - timedelta(days=1)).day
+        gün = calendar.monthrange(şimdi.year, şimdi.month)[1]
 
-        await Beğenme(message,f"Bu ay {gün} gün.")
+        await Beğenme(message, f"Bu ay {gün} gün.")
 
     elif re.fullmatch(r"\s*(?:bu\s+)?(bugün\s+)?(ay(ın)?|ayın)\s+kaçıncı\s+hafta(sı)?(ndayız)?|ayın\s+haftalarından\s+kaçıncıdayız|ayın\s+haftalarından\s+kaçıncı\s+hafta(sı)?d?ndayız\s*\?*\s*", cleaned_content, re.IGNORECASE):
         şimdi = datetime.now(pytz.timezone("Europe/Istanbul"))
         ayın_ilk_günü = datetime(şimdi.year, şimdi.month, 1, tzinfo=pytz.timezone("Europe/Istanbul"))
         hafta = ((şimdi - ayın_ilk_günü).days // 7) + 1
 
-        await Beğenme(message,f"Bu ayın {hafta}. haftasındayız.")
+        await Beğenme(message, f"Bu ayın {hafta}. haftasındayız.")
 
     elif re.fullmatch(r"\s*(bugün\s+)?(yıl(ın)?|bu\s+yıl|yılın\s+günlerinden|yılın\s+günlerinden\s+kaçıncı)\s+kaçıncı\s+gün(ü)?(ndeyiz)?\s*\?*\s*", cleaned_content, re.IGNORECASE):
         şimdi = datetime.now(pytz.timezone("Europe/Istanbul"))
         gün = şimdi.timetuple().tm_yday
 
-        await Beğenme(message,f"Yılın {gün}. günündeyiz.")
+        await Beğenme(message, f"Yılın {gün}. günündeyiz.")
 
     elif re.fullmatch(r"\s*(bu\s+yılın\s+kaçıncı\s+haftasındayız|yılın\s+kaçıncı\s+haftasındayız|yılın\s+haftalarından\s+kaçıncıdayız|yılın\s+haftalarından\s+kaçıncı\s+haftasındayız)\s*\?*\s*", cleaned_content, re.IGNORECASE):
         şimdi = datetime.now(pytz.timezone("Europe/Istanbul"))
         hafta = şimdi.isocalendar()[1]
 
-        await Beğenme(message,f"Yılın {hafta}. haftasındayız.")
+        await Beğenme(message, f"Yılın {hafta}. haftasındayız.")
 
     elif re.fullmatch(r"\s*(bu\s+yılın\s+kaçıncı\s+ayındayız|yılın\s+kaçıncı\s+ayındayız|yılın\s+aylarından\s+kaçıncıdayız|yılın\s+aylarından\s+kaçıncı\s+aydayız)\s*\?*\s*", cleaned_content, re.IGNORECASE):
         şimdi = datetime.now(pytz.timezone("Europe/Istanbul"))
         ay = şimdi.month
 
-        await Beğenme(message,f"Yılın {ay}. ayındayız.")
+        await Beğenme(message, f"Yılın {ay}. ayındayız.")
 
     elif re.fullmatch(r"\s*(yılın\s+mevsimlerinden\s+kaçıncıdayız|mevsimlerden\s+kaçıncıdayız|yılın\s+mevsimlerinden\s+kaçıncı\s+mevsimdeyiz|yılın\s+mevsimlerinden\s+kaçıncı\s+mevsimindeyiz|mevsimlerden\s+kaçıncı\s+mevsimdeyiz|bu\s+yılın\s+kaçıncı\s+mevsimindeyiz)\s*\?*\s*", cleaned_content, re.IGNORECASE):
         şimdi = datetime.now(pytz.timezone("Europe/Istanbul"))
@@ -253,7 +259,7 @@ async def on_message(message):
         elif ay_numarası in [12, 1, 2]:
             mevsim = 4
 
-        await Beğenme(message,f"Yılın {mevsim}. mevsimindeyiz.")
+        await Beğenme(message, f"Yılın {mevsim}. mevsimindeyiz.")
 
     elif re.fullmatch(r"\s*(?:bu\s+)?(bugün\s+mevsimin\s+kaçıncı\s+günü|mevsimin\s+kaçıncı\s+günü|mevsimin\s+kaçıncı\s+günündeyiz|bu\s+mevsimin\s+kaçıncı\s+günündeyiz|bu\s+mevsimin\s+günlerinden\s+kaçıncıdayız|mevsimin\s+günlerinden\s+kaçıncı\s+gündeyiz)\s*\?*\s*", cleaned_content, re.IGNORECASE):
         şimdi = datetime.now(pytz.timezone("Europe/Istanbul"))
@@ -278,7 +284,7 @@ async def on_message(message):
 
         gün = (datetime(şimdi.year, ay, gün) - datetime(şimdi.year, mevsim_ayları[0], 1)).days + 1
 
-        await Beğenme(message,f"Bu mevsimin {gün}. günündeyiz.")
+        await Beğenme(message, f"Bu mevsimin {gün}. günündeyiz.")
 
     elif re.fullmatch(r"\s*(?:bu\s+)?(mevsimin\s+kaçıncı\s+haftasındayız|mevsimin\s+haftalarından\s+kaçıncıdayız|mevsimin\s+haftalarından\s+kaçıncı\s+haftadayız|mevsimin\s+haftalarından\s+kaçıncı\s+haftasındayız)\s*\?*\s*", cleaned_content, re.IGNORECASE):
         şimdi = datetime.now(pytz.timezone("Europe/Istanbul"))
@@ -303,7 +309,7 @@ async def on_message(message):
         mevsim_başlangıcı = datetime(şimdi.year, başlangıç_ayı, 1, tzinfo=pytz.timezone("Europe/Istanbul"))
         hafta = ((şimdi - mevsim_başlangıcı).days // 7) + 1
 
-        await Beğenme(message,f"Bu mevsiminin {hafta}. haftasındayız.")
+        await Beğenme(message, f"Bu mevsiminin {hafta}. haftasındayız.")
 
     elif re.fullmatch(r"\s*(?:bu\s+)?(mevsimin\s+haftalarından\s+kaçıncıdayız|mevsimin\s+haftalarından\s+kaçıncı\s+haftadayız|mevsimin\s+haftalarından\s+kaçıncı\s+haftasındayız|mevsimin\s+kaçıncı\s+haftasındayız|bu\s+mevsimin\s+kaçıncı\s+haftasındayız|mevsimin\s+kaçıncı\s+haftadayız|bu\s+mevsimin\s+kaçıncı\s+haftadayız|mevsimin\s+aylarından\s+kaçıncıdayız|mevsimin\s+aylarından\s+kaçıncı\s+aydayız|mevsimin\s+aylarından\s+kaçıncı\s+ayındayız|mevsimin\s+kaçıncı\s+ayındayız|bu\s+mevsimin\s+kaçıncı\s+ayındayız|mevsimin\s+kaçıncı\s+aydayız|bu\s+mevsimin\s+kaçıncı\s+aydayız)\s*\?*\s*", cleaned_content, re.IGNORECASE):
         şimdi = datetime.now(pytz.timezone("Europe/Istanbul"))
@@ -325,7 +331,7 @@ async def on_message(message):
             mevsim = "Sonbahar"
             ay = ay_numarası - 9 + 1
 
-        await Beğenme(message,f"Bu mevsiminin {ay}. ayındayız.")
+        await Beğenme(message, f"Bu mevsiminin {ay}. ayındayız.")
 
     elif re.fullmatch(r"\s*(ne\s+ayındayız|hangi\s+aydayız|ayımız\s*ne|ay(?:ı)?\s*(?:söyle|soyle)?|ayımızı\s*(?:söyle|soyle)?|aylardan\s+ne|aylardan\s+hangisindeyiz|aylardan\s+hangi\s+aydaız)\s*\?*\s*", cleaned_content, re.IGNORECASE):
         şimdi = datetime.now(pytz.timezone("Europe/Istanbul"))
@@ -333,29 +339,29 @@ async def on_message(message):
                  "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık"]
         ay = aylar[şimdi.month - 1]
 
-        await Beğenme(message,f"Ay: {ay}")
+        await Beğenme(message, f"Ay: {ay}")
 
     elif re.search(r"\b(bugün|gün(ü)?|hafta(nı)?n( hangi gün(ü)?| hangi günündeyiz)?|günlerden hangi|hangi gündeyiz|gün ne)\b\s*(söyle|soyle)?\s*\?*", cleaned_content, re.IGNORECASE):
         şimdi = datetime.now(pytz.timezone("Europe/Istanbul"))
         günler = ["Pazartesi", "Salı", "Çarşamba", "Perşembe", "Cuma", "Cumartesi", "Pazar"]
         gün = günler[şimdi.weekday()]
 
-        await Beğenme(message,f"Bugün: {gün}")
+        await Beğenme(message, f"Bugün: {gün}")
 
     elif re.fullmatch(r"\s*s+\s*a+\s*a+\s*t+\s*(?:i|)\s*(?:k+a+ç+|k+a+ç+t+ı+r*|s+ö+l+e|s+o+l+e|o+l+d+u+|g+ö+s+t+e+r|g+o+s+t+e+r)?\s*(\?*)\s*", cleaned_content, re.IGNORECASE):
         timezone = pytz.timezone("Europe/Istanbul")
         şimdi = datetime.now(timezone)
 
-        await Beğenme(message,f"Saat: {şimdi.strftime('%H:%M:%S')}")
+        await Beğenme(message, f"Saat: {şimdi.strftime('%H:%M:%S')}")
 
     elif re.search(r"[\d\+\-\*/xX:÷.,]+", cleaned_content):
-        expression = re.sub(r"^[a-zA-Z\+\*/xX:÷]+", "", cleaned_content)
-        expression = re.sub(r"[a-zA-Z]", "", expression)
-        expression = expression.replace("x","*").replace("X","*").replace(":", "/").replace("÷","/")
-        expression = re.sub(r"(\+)+", "+", expression)
-        expression = re.sub(r"(\*)+", "*", expression)
-        expression = re.sub(r"(/)+", "/", expression)
-        sonuç = Güvenli_Değerlendirme(expression)
+        ifade = re.sub(r"^[a-zA-Z\+\*/xX:÷]+", "", cleaned_content)
+        ifade = re.sub(r"[a-zA-Z]", "", ifade)
+        ifade = ifade.replace("x","*").replace("X","*").replace(":", "/").replace("÷","/")
+        ifade = re.sub(r"(\+)+", "+", ifade)
+        ifade = re.sub(r"(\*)+", "*", ifade)
+        ifade = re.sub(r"(/)+", "/", ifade)
+        sonuç = Güvenli_Değerlendirme(ifade)
 
         if isinstance(sonuç, float) and sonuç.is_integer():
             sonuç = int(sonuç)
@@ -375,7 +381,7 @@ async def on_message(message):
 
         if user_id not in kullanıcı_yanıtları:
             kullanıcı_yanıtları[user_id] = 0
-            soru_sayisi = random.randint(10, 25)
+            soru_sayisi = random.randint(15, 25)
             sorulacak_soru = random.sample(range(len(sorular)), soru_sayisi)
             kullanıcı_soruları[user_id] = sorulacak_soru
 
@@ -383,8 +389,5 @@ async def on_message(message):
 
         if random.randint(1, 2) == 1:
             await message.add_reaction("👍🏻")
-
-    else:
-        await message.channel.send("Mesajınız anlaşılamadı.")
 
 bot.run(TOKEN)

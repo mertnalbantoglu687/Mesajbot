@@ -7,7 +7,7 @@ import re
 
 load_dotenv(override = True)
 
-TOKEN = os.environ.get("DISCORD_TOKEN")
+KİMLİK = os.environ.get("DiSCORD_KiMLiĞi")
 
 intents = discord.Intents.all()
 intents.messages = True
@@ -411,4 +411,4 @@ async def on_message(message):
         if random.randint(1, 2) == 1:
             await message.add_reaction("👍🏻")
 
-bot.run(TOKEN)
+bot.run(KİMLİK)

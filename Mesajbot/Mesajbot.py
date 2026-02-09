@@ -1,19 +1,28 @@
-from discord.ext import commands, tasks
+from discord.ext import commands
 from dotenv import load_dotenv
+from discord.ext import tasks
+from datetime import datetime
 from Mantık import *
-import ast, operator
+import operator
+import calendar
 import discord
+import asyncio
+import sqlite3
+import string
+import random
+import pytz
+import ast
 import os
 import re
 
 load_dotenv(override = True)
 
 intents = discord.Intents.all()
+intents.message_content = True
 intents.messages = True
 intents.guilds = True
-intents.message_content = True
 
-bot = commands.Bot(command_prefix = "", intents = intents)
+Bot = commands.Bot(command_prefix = "", intents = intents)
 
 KİMLİK = os.environ.get("DiSCORD_KiMLiĞi")
 
@@ -23,7 +32,7 @@ kullanıcı_yanıtları = {}
 kullanıcı_soruları = {}
 kullanıcı_cevapları = {}
 
-@bot.event
+@Bot.event
 async def on_ready():
     print("Mesajbot Açıldı.")
 
@@ -34,13 +43,7 @@ async def Beğenme(message,  response_text):
 
 def Güvenli_Değerlendirme(expr):
 
-    operatörler = {
-        ast.Add: operator.add,
-        ast.Sub: operator.sub,
-        ast.Mult: operator.mul,
-        ast.Div: operator.truediv,
-        ast.USub: operator.neg
-    }
+    operatörler = {ast.Add: operator.add,ast.Sub: operator.sub,ast.Mult: operator.mul,ast.Div: operator.truediv,ast.USub: operator.neg}
 
     def Değerlendirme(sayı):
         if isinstance(sayı, ast.Constant):
@@ -49,10 +52,8 @@ def Güvenli_Değerlendirme(expr):
         elif isinstance(sayı, ast.BinOp):
             if type(sayı.op) not in operatörler:
                 raise ValueError("Mesajınız anlaşılamadı.")
-            return operatörler[type(sayı.op)](
-                Değerlendirme(sayı.left),
-                Değerlendirme(sayı.right)
-            )
+
+            return operatörler[type(sayı.op)](Değerlendirme(sayı.left),Değerlendirme(sayı.right))
 
         elif isinstance(sayı, ast.UnaryOp):
             if type(sayı.op) not in operatörler:
@@ -75,11 +76,22 @@ async def Kullanıcıya_Soru_Gönder(channel, user_id):
 
     await channel.send(soru.text, view = görüntü)
 
-@bot.event
+@Bot.event
 async def on_interaction(interaction: discord.Interaction):
+    if not interaction.data or "custom_id" not in interaction.data:
+        return
+
+    if not interaction.data["custom_id"].startswith("answer_"):
+        return
+
     kullanıcı_kimliği = interaction.user.id
+
+    if kullanıcı_kimliği not in kullanıcı_soruları:
+        return
+
     soru_görünümü = kullanıcı_soruları[kullanıcı_kimliği][kullanıcı_yanıtları[kullanıcı_kimliği]]
     soru = sorular[soru_görünümü]
+
     özel_kimlik = interaction.data["custom_id"]
     seçilen_görünüm = int(özel_kimlik.split("_")[1])
 
@@ -91,10 +103,7 @@ async def on_interaction(interaction: discord.Interaction):
         await interaction.response.send_message("Doğru bildin.", ephemeral = True)
     else:
         kullanıcı_cevapları[kullanıcı_kimliği]["Yanlış Cevaplar"] += 1
-        await interaction.response.send_message(
-            f"Yanlış bildin. Doğru cevap {soru.secenekler[soru.answer_id]} olacaktı.",
-            ephemeral = True
-        )
+        await interaction.response.send_message(f"Yanlış bildin. Doğru cevap {soru.seçenekler[soru.answer_id]} olacaktı.",ephemeral = True)
 
     kullanıcı_yanıtları[kullanıcı_kimliği] += 1
 
@@ -110,18 +119,17 @@ async def on_interaction(interaction: discord.Interaction):
     else:
         await Kullanıcıya_Soru_Gönder(interaction.channel, kullanıcı_kimliği)
 
-@bot.event
+@Bot.event
 async def on_message(message):
     cleaned_content = message.content.lower()
 
-    if message.author == bot.user:
+    if message.author == Bot.user:
         return
 
-    await bot.process_commands(message)
+    await Bot.process_commands(message)
 
     if re.fullmatch(r"\s*m+\s*e+\s*r+\s*h+\s*a+\s*b+\s*a+\s*", cleaned_content):
         await Beğenme(message, "Sana da merhaba.")
-
     elif re.fullmatch(r"\s*(n+a+s+ı+l+s+ı+n|n+a+s+i+l+s+i+n|i+y+i\s*m+i+s+i+n)\s*(\?*)\s*", cleaned_content, re.IGNORECASE):
         await Beğenme(message, "İyiyim, sorduğun için teşekkür ederim.")
 
@@ -131,7 +139,7 @@ async def on_message(message):
     elif re.fullmatch(r"\s*(i+s+m+ı+n?|i+s+i+m+)\s*(\s*n+e)?\s*(\?*)\s*", cleaned_content, re.IGNORECASE):
         await Beğenme(message, "Benim ismim Mesajbot.")
 
-    elif re.fullmatch(r"\s*s+e+n+i+\s*(k+i+m|y+a+p+a+n|y+ı+z+ı+l+m+a+y+a+n|y+ı+z+ı+l+m+a+y+a+n+ı+n)\s*(a+d+ı|a+d+i|i+s+m+i)?\s*(n+e)?\s*\??\s*", cleaned_content, re.IGNORECASE):
+    elif re.fullmatch(r"\s*s+e+n+i+\s*(?:(?:k+i+m\s*(?:y+a+p+t+ı+|y+a+p+a+n|k+o+d+l+a+d+ı+|y+a+z+ı+l+ı+m+l+a+d+ı+)?)|(?:y+a+p+a+n|k+o+d+l+a+y+a+n|y+a+z+ı+l+ı+m+l+a+y+a+n))\s*(?:k+i+m)?\s*(?:a+d+ı|a+d+i|i+s+m+i)?\s*(?:n+e)?\s*\??\s*", cleaned_content, re.IGNORECASE):
         await Beğenme(message, "Beni Mert Nalbantoğlu yazılımladı.")
 
     elif re.fullmatch(r"\s*s+\s*e+\s*n+\s*\s*n+\s*e+\s*s+\s*i+\s*n\s*(\?*)\s*", cleaned_content, re.IGNORECASE):
@@ -145,6 +153,21 @@ async def on_message(message):
 
     elif re.fullmatch(r"\b(e+m+o+j+i|yüz|gülen\s*yüz|surat)\b(\s*(at|gönder|yolla))?\s*\?*", cleaned_content, re.IGNORECASE):
         await Beğenme(message, Emoji_Gönder())
+    
+    elif re.fullmatch(r"\s*(oyun(u)?(\s*(oyna(t)?|ac|aç|başlat)?)?|oyna(t)?|ac|aç|başlat)\s*\?*",cleaned_content,re.IGNORECASE):
+        kullanıcı_kimliği = message.author.id
+        labirent, giriş, çıkış = Labirent(11)
+        Oyunlar[kullanıcı_kimliği] = {"labirent": labirent,"x": giriş[0],"y": giriş[1],"çıkış": çıkış,"puan": 0,"doğru": 0,"yanlış": 0,"renk_sayısı": 2,"renkler": random.sample(RENKLER, 2),"sıra": [random.randint(0,1)],"giriş": [],"hareket_hakkı": True}
+        oyun = Oyunlar[kullanıcı_kimliği]
+        oyun["renkler"] = random.sample(RENKLER, oyun["renk_sayısı"])
+        oyun["sıra"] = Sırayı_Güncelle(
+        oyun["renk_sayısı"],len(oyun["sıra"]) + 1)
+        mesaj = await message.channel.send("Oyun başladı.")
+        await Sırayı_Göster(mesaj, oyun)
+        await mesaj.edit(content=Harita_Çiz(oyun) + "\nDoğru sıralamayı gir.", view=Renk_Girme_Düğmeleri(kullanıcı_kimliği))
+
+        if random.randint(1, 2) == 1:
+            await message.add_reaction("👍🏻")
 
     elif re.fullmatch(r"(t+a+r+i+h|t+a+r+i+h+i|t+a+r+i+h\s*g+ö+s+t+e+r|t+a+r+i+h\s*g+ö+s+t+e+r+i|t+a+r+i+h\s*g+o+s+t+e+r|t+a+r+i+h\s*g+o+s+t+e+r+i|t+a+r+i+h\s*n+e|t+a+r+i+h+i\s*s+ö+y+l+e|t+a+r+i+h+i\s*s+o+y+l+e|t+a+r+i+h\s*s+ö+y+l+e|t+a+r+i+h\s*s+o+y+l+e|hangi\s+t+a+r+i+h+t+e+y+i+z)\s*\?*", cleaned_content, re.IGNORECASE):
         gün = f"{bölge.day:02}"
@@ -393,7 +416,8 @@ async def on_message(message):
 
         if random.randint(1, 2) == 1:
             await message.add_reaction("👍🏻")
+
     else:
         await Beğenme(message, "Mesajınız anlaşılamadı.")
 
-bot.run(KİMLİK)
+Bot.run(KİMLİK)

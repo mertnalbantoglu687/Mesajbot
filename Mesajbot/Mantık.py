@@ -4,7 +4,24 @@ import discord
 import random
 import requests
 import calendar
+import sqlite3
+import asyncio
+import base64
 import pytz
+import time
+import json
+import os
+
+from dotenv import load_dotenv
+
+load_dotenv()
+
+API_ANAHTARI = os.environ.get("API_ANAHTARI")
+GİZLİ_ANAHTAR = os.environ.get("GİZLİ_ANAHTAR")
+
+Oyunlar = {}
+
+RENKLER = ["🟦","🟥","🟨","🟩","🟧"]
 
 def Parola_Gönder(en_az_uzunluk, en_çok_uzunluk):
     karakterler = "é!'^+%½&/?*_-@´`<>AaBbCcÇçDdEeFfGgĞğHhIıİiJjKkLlMmNnOoÖöPpRrSsŞşTtUuÜüVvYyZz1234567890"
@@ -133,7 +150,7 @@ class Hesap_Makinesi(discord.ui.View):
 
     async def Yazı(self, interaction: discord.Interaction):
         content_to_send = f"```{self.input_text}```" if self.input_text else ""
-        await interaction.response.edit_message(content=content_to_send, view=self)
+        await interaction.response.edit_message(content = content_to_send, view = self)
 
     @discord.ui.button(label = "1", style=discord.ButtonStyle.primary, row = 0)
     async def Bir(self, button, interaction: discord.Interaction):
@@ -202,3 +219,173 @@ class Hesap_Makinesi(discord.ui.View):
     @discord.ui.button(label = "÷", style=discord.ButtonStyle.success, row = 3)
     async def Bölü(self, button, interaction: discord.Interaction):
         self.input_text += "/"; await self.Yazı(interaction)
+
+def Labirent(boyut=11):
+    if boyut % 2 == 0:
+        boyut += 1
+
+    labirent = [[1]*boyut for _ in range(boyut)]
+
+    def Kaz(x, y):
+        yönler = [(2,0),(-2,0),(0,2),(0,-2)]
+        random.shuffle(yönler)
+        labirent[y][x] = 0
+        for dx, dy in yönler:
+            nx, ny = x+dx, y+dy
+            if 1 <= nx < boyut-1 and 1 <= ny < boyut-1 and labirent[ny][nx] == 1:
+                labirent[y+dy//2][x+dx//2] = 0
+                Kaz(nx, ny)
+
+    Kaz(1, 1)
+    giriş_y = random.randrange(1, boyut-1, 2)
+    labirent[giriş_y][0] = 0
+    labirent[giriş_y][1] = 0
+    giriş = (0, giriş_y)
+    çıkış_y = random.randrange(1, boyut-1, 2)
+    labirent[çıkış_y][boyut-1] = 0
+    labirent[çıkış_y][boyut-2] = 0
+    çıkış = (boyut-1, çıkış_y)
+
+    return labirent, giriş, çıkış
+
+def Harita_Çiz(oyun):
+    çizim = ""
+    for y, row in enumerate(oyun["labirent"]):
+        for x, val in enumerate(row):
+            if (x, y) == (oyun["x"], oyun["y"]):
+                çizim += "🔴"
+            elif val == 1:
+                çizim += "⬛"
+            else:
+                çizim += "🟩"
+        çizim += "\n"
+    return çizim
+
+def Sırayı_Güncelle(renk_sayısı, uzunluk):
+    return [random.randint(0, renk_sayısı - 1) for _ in range(uzunluk)]
+
+async def Geri_Sayım(message, oyun):
+    harita = Harita_Çiz(oyun)
+
+    for a in ["3️⃣", "2️⃣", "1️⃣"]:
+        await message.edit(content = f"{harita}\nHazır ol: {a}",view = None)
+        await asyncio.sleep(1)
+
+async def Sırayı_Göster(message, oyun):
+    harita = Harita_Çiz(oyun)
+
+    await Geri_Sayım(message, oyun)
+
+    for a in oyun["sıra"]:
+        emoji = oyun["renkler"][a]
+        await message.edit(
+            content = f"{harita}\nSıralamayı ezberle: {emoji}",
+            view = None
+        )
+        await asyncio.sleep(1)
+
+        await message.edit(content = f"{harita}\n...", view = None)
+        await asyncio.sleep(0.3)
+
+class Renk_Düğmeleri(discord.ui.Button):
+    def __init__(self, index, emoji, view):
+        super().__init__(
+            style=discord.ButtonStyle.secondary,emoji=emoji)
+        self.index = index
+        self.view_ref = view
+
+    async def callback(self, interaction):
+        await self.view_ref.Kontrol(interaction, self.index)
+
+class Yön_Düğmeleri(discord.ui.Button):
+    def __init__(self, emoji, dx, dy, kullanıcı_kimliği):
+        super().__init__(
+            style=discord.ButtonStyle.secondary,emoji=emoji)
+        self.dx = dx
+        self.dy = dy
+        self.kullanıcı_kimliği = kullanıcı_kimliği
+
+    async def callback(self, interaction):
+        oyun = Oyunlar[self.kullanıcı_kimliği]
+
+        if not oyun["hareket_hakkı"]:
+            await interaction.response.defer()
+            return
+
+        nx = oyun["x"] + self.dx
+        ny = oyun["y"] + self.dy
+
+        if oyun["labirent"][ny][nx] == 0:
+            oyun["x"], oyun["y"] = nx, ny
+
+        if (oyun["x"], oyun["y"]) == oyun["çıkış"]:
+            await interaction.response.edit_message(content = f"Kazandın.\n\nPuan: {oyun['puan']}\nDoğru Sayısı: {oyun['doğru']}\nYanlış Sayısı: {oyun['yanlış']}",view = None)
+            return
+
+        oyun["hareket_hakkı"] = False
+
+        await interaction.response.edit_message(content = Harita_Çiz(oyun),view = None)
+        await asyncio.sleep(0.8)
+        await Sırayı_Göster(interaction.message, oyun)
+        await interaction.message.edit(
+            content = Harita_Çiz(oyun),
+            view = Renk_Girme_Düğmeleri(self.kullanıcı_kimliği))
+
+class Düğmeler(discord.ui.View):
+    def __init__(self, kullanıcı_kimliği):
+        super().__init__(timeout=30)
+        oyun = Oyunlar[kullanıcı_kimliği]
+        x, y = oyun["x"], oyun["y"]
+        l = oyun["labirent"]
+
+        if y > 0 and l[y-1][x] == 0:
+            self.add_item(Yön_Düğmeleri("⬆️",0,-1,kullanıcı_kimliği))
+        if y < len(l)-1 and l[y+1][x] == 0:
+            self.add_item(Yön_Düğmeleri("⬇️",0,1,kullanıcı_kimliği))
+        if x > 0 and l[y][x-1] == 0:
+            self.add_item(Yön_Düğmeleri("⬅️",-1,0,kullanıcı_kimliği))
+        if x < len(l)-1 and l[y][x+1] == 0:
+            self.add_item(Yön_Düğmeleri("➡️",1,0,kullanıcı_kimliği))
+
+class Renk_Girme_Düğmeleri(discord.ui.View):
+    def __init__(self, kullanıcı_kimliği):
+        super().__init__(timeout=60)
+        self.kullanıcı_kimliği = kullanıcı_kimliği
+        oyun = Oyunlar[kullanıcı_kimliği]
+
+        for a in range(oyun["renk_sayısı"]):
+            self.add_item(Renk_Düğmeleri(a, oyun["renkler"][a], self))
+
+    async def Kontrol(self, interaction, secim):
+        await interaction.response.defer()
+        oyun = Oyunlar[self.kullanıcı_kimliği]
+
+        def Bilgi_Yazısı(oyun, baslik):
+            return (f"{baslik}\n\n"f"Doğru Sayısı: {oyun['doğru']}\n"f"Yanlış Sayısı: {oyun['yanlış']}\n"f"Puan: {oyun['puan']}")
+
+        oyun["giriş"].append(secim)
+
+        if oyun["giriş"] != oyun["sıra"][:len(oyun["giriş"])]:
+            oyun["yanlış"] += 1
+            oyun["giriş"] = []
+
+            await interaction.message.edit(content = Harita_Çiz(oyun) + "\n" + Bilgi_Yazısı(oyun, "Sıralamayı yanlış girdin."),view = None)
+            await asyncio.sleep(3)
+            await Sırayı_Göster(interaction.message, oyun)
+            await interaction.message.edit(content = Harita_Çiz(oyun),view = Renk_Girme_Düğmeleri(self.kullanıcı_kimliği))
+            return
+
+        if len(oyun["giriş"]) == len(oyun["sıra"]):
+            oyun["puan"] += 1
+            oyun["doğru"] += 1
+            oyun["giriş"] = []
+
+            if oyun["doğru"] % 4 == 0 and oyun["renk_sayısı"] < 5:
+                oyun["renk_sayısı"] += 1
+
+            oyun["renkler"] = random.sample(RENKLER, oyun["renk_sayısı"])
+            oyun["sıra"] = Sırayı_Güncelle(oyun["renk_sayısı"],len(oyun["sıra"]) + 1)
+            await interaction.message.edit(content = Harita_Çiz(oyun) + "\n" +Bilgi_Yazısı(oyun, "Sıralamayı doğru girdin."),view = None)
+            await asyncio.sleep(3)
+            oyun["hareket_hakkı"] = True
+            await interaction.message.edit(content = Harita_Çiz(oyun) + "\nGitmek istediğin yönü seç:", view=Düğmeler(self.kullanıcı_kimliği))

@@ -141,6 +141,22 @@ sorular = [
 
     Sorular("Hangisi bir asal sayıdır?", 1, "4", "7", "9"),
     Sorular("Hangisi bir asal sayı değildir?", 0, "8", "2", "5"),
+    Sorular("Hangi sayılar aralarında asal sayılardır?", 2, "6 ve 8", "12 ve 18", "8 ve 15"),
+    Sorular("Hangi sayılar aralarında asal sayılar değildir?", 0, "9 ve 15", "7 ve 20", "11 ve 18"),
+
+    Sorular("Kesişen doğrular ile ilgili hangi ifade doğrudur?", 1, "Hiçbir zaman ortak noktaları yoktur", "Bir noktada kesişirler", "Üst üste duran doğrulardır"),
+    Sorular("Kesişen doğrular ile ilgili hangi ifade yanlıştır?", 0, "Hiç kesişmezler", "Bir noktada kesişirler", "Ortak bir noktaları vardır"),
+    Sorular("Hangisi kesişen doğrulara örnektir?", 0, "Makasın uçları", "Defter çizgileri", "Tren rayları"),
+    Sorular("Çakışan doğrular ile ilgili hangi ifade doğrudur?", 2, "Sadece bir noktada kesişirler", "Paraleldirler", "Tüm noktaları ortaktır"),
+    Sorular("Çakışan doğrular ile ilgili hangi ifade yanlıştır?", 1, "Tüm noktaları ortaktır", "Sadece bir noktada kesişirler", "Üst üste duran doğrulardır"),
+    Sorular("Hangisi çakışan doğrulara örnektir?", 1, "Paralel yollar", "Aynı doğruyu iki kez çizmek", "Tren rayları"),
+    Sorular("Dik kesişen doğrular ile ilgili hangi ifade doğrudur?", 0, "90° açı ile kesişirler", "Kesişmezler", "Üst üste dururlar"),
+    Sorular("Dik kesişen doğrular ile ilgili hangi ifade yanlıştır?", 2, "90° açı oluştururlar", "Bir noktada kesişirler", "Hiç kesişmezler"),
+    Sorular("Hangisi dik kesişen doğrulara örnektir?", 2, "Tren rayları", "Defter çizgileri", "Duvar ile zemin köşesi"),
+    Sorular("Paralel doğrular ile ilgili hangi ifade doğrudur?", 1, "Bir noktada kesişirler", "Hiç kesişmezler", "Çakışırlar"),
+    Sorular("Paralel doğrular ile ilgili hangi ifade yanlıştır?", 0, "Bir noktada kesişirler", "Hiç kesişmezler", "Aralarındaki uzaklık her yerde aynıdır"),
+    Sorular("Hangisi paralel doğrulara örnektir?", 1, "Makasın uçları", "Defter çizgileri", "Duvar ile zemin köşesi"),
+
 ]
 
 class Hesap_Makinesi(discord.ui.View):

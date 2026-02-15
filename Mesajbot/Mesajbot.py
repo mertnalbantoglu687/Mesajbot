@@ -125,8 +125,8 @@ async def on_message(message):
 
     if message.author == Bot.user:
         return
-
-    await Bot.process_commands(message)
+    cleaned_content = message.content.lower()
+    handled = False
 
     if re.fullmatch(r"\s*m+\s*e+\s*r+\s*h+\s*a+\s*b+\s*a+\s*", cleaned_content):
         await Beğenme(message, "Sana da merhaba.")
@@ -157,15 +157,14 @@ async def on_message(message):
     elif re.fullmatch(r"\s*(oyun(u)?(\s*(oyna(t)?|ac|aç|başlat)?)?|oyna(t)?|ac|aç|başlat)\s*\?*",cleaned_content,re.IGNORECASE):
         kullanıcı_kimliği = message.author.id
         labirent, giriş, çıkış = Labirent(11)
-        Oyunlar[kullanıcı_kimliği] = {"labirent": labirent,"x": giriş[0],"y": giriş[1],"çıkış": çıkış,"puan": 0,"doğru": 0,"yanlış": 0,"renk_sayısı": 2,"renkler": random.sample(RENKLER, 2),"sıra": [random.randint(0,1)],"giriş": [],"hareket_hakkı": True}
+        Oyunlar[kullanıcı_kimliği] = {"labirent": labirent,"x": giriş[0],"y": giriş[1],"çıkış": çıkış,"puan": 0,"doğru": 0,"yanlış": 0,"renk_sayısı": 2,"renkler": random.sample(RENKLER, 2),"sıra": [random.randint(0, 1)],"giriş": [],"hareket_hakkı": True}
         oyun = Oyunlar[kullanıcı_kimliği]
         oyun["renkler"] = random.sample(RENKLER, oyun["renk_sayısı"])
-        oyun["sıra"] = Sırayı_Güncelle(
-        oyun["renk_sayısı"],len(oyun["sıra"]) + 1)
+        oyun["sıra"] = Sırayı_Güncelle(oyun["renk_sayısı"], len(oyun["sıra"]) + 1)
         mesaj = await message.channel.send("Oyun başladı.")
         await Sırayı_Göster(mesaj, oyun)
-        await mesaj.edit(content=Harita_Çiz(oyun) + "\nDoğru sıralamayı gir.", view=Renk_Girme_Düğmeleri(kullanıcı_kimliği))
-
+        await mesaj.edit(content = f"{Harita_Çiz(oyun)}\nDoğru sıralamayı gir:", view = Renk_Girme_Düğmeleri(kullanıcı_kimliği))
+    
         if random.randint(1, 2) == 1:
             await message.add_reaction("👍🏻")
 

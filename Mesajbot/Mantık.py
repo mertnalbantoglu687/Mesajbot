@@ -145,70 +145,70 @@ sorular = [
 
 class Hesap_Makinesi(discord.ui.View):
     def __init__(self):
-        super().__init__(timeout=None)
+        super().__init__(timeout = None)
         self.input_text = ""
 
     async def Yazı(self, interaction: discord.Interaction):
         content_to_send = f"```{self.input_text}```" if self.input_text else ""
         await interaction.response.edit_message(content = content_to_send, view = self)
 
-    @discord.ui.button(label = "1", style=discord.ButtonStyle.primary, row = 0)
+    @discord.ui.button(label = "1", style = discord.ButtonStyle.primary, row = 0)
     async def Bir(self, button, interaction: discord.Interaction):
         self.input_text += "1"; await self.Yazı(interaction)
 
-    @discord.ui.button(label = "2", style=discord.ButtonStyle.primary, row = 0)
+    @discord.ui.button(label = "2", style = discord.ButtonStyle.primary, row = 0)
     async def İki(self, button, interaction: discord.Interaction):
         self.input_text += "2"; await self.Yazı(interaction)
 
-    @discord.ui.button(label = "3", style=discord.ButtonStyle.primary, row = 0)
+    @discord.ui.button(label = "3", style = discord.ButtonStyle.primary, row = 0)
     async def Üç(self, button, interaction: discord.Interaction):
         self.input_text += "3"; await self.Yazı(interaction)
 
-    @discord.ui.button(label = "+", style=discord.ButtonStyle.success, row = 0)
+    @discord.ui.button(label = "+", style = discord.ButtonStyle.success, row = 0)
     async def Artı(self, button, interaction: discord.Interaction):
         self.input_text += "+"; await self.Yazı(interaction)
 
-    @discord.ui.button(label = "4", style=discord.ButtonStyle.primary, row = 1)
+    @discord.ui.button(label = "4", style = discord.ButtonStyle.primary, row = 1)
     async def Dört(self, button, interaction: discord.Interaction):
         self.input_text += "4"; await self.Yazı(interaction)
 
-    @discord.ui.button(label = "5", style=discord.ButtonStyle.primary, row = 1)
+    @discord.ui.button(label = "5", style = discord.ButtonStyle.primary, row = 1)
     async def Beş(self, button, interaction: discord.Interaction):
         self.input_text += "5"; await self.Yazı(interaction)
 
-    @discord.ui.button(label = "6", style=discord.ButtonStyle.primary, row = 1)
+    @discord.ui.button(label = "6", style = discord.ButtonStyle.primary, row = 1)
     async def Altı(self, button, interaction: discord.Interaction):
         self.input_text += "6"; await self.Yazı(interaction)
 
-    @discord.ui.button(label = "-", style=discord.ButtonStyle.success, row = 1)
+    @discord.ui.button(label = "-", style = discord.ButtonStyle.success, row = 1)
     async def Eksi(self, button, interaction: discord.Interaction):
         self.input_text += "-"; await self.Yazı(interaction)
 
-    @discord.ui.button(label = "7", style=discord.ButtonStyle.primary, row = 2)
+    @discord.ui.button(label = "7", style = discord.ButtonStyle.primary, row = 2)
     async def Yedi(self, button, interaction: discord.Interaction):
         self.input_text += "7"; await self.Yazı(interaction)
 
-    @discord.ui.button(label = "8", style=discord.ButtonStyle.primary, row = 2)
+    @discord.ui.button(label = "8", style = discord.ButtonStyle.primary, row = 2)
     async def Sekiz(self, button, interaction: discord.Interaction):
         self.input_text += "8"; await self.Yazı(interaction)
 
-    @discord.ui.button(label = "9", style=discord.ButtonStyle.primary, row = 2)
+    @discord.ui.button(label = "9", style = discord.ButtonStyle.primary, row = 2)
     async def Dokuz(self, button, interaction: discord.Interaction):
         self.input_text += "9"; await self.Yazı(interaction)
 
-    @discord.ui.button(label = "x", style=discord.ButtonStyle.success, row = 2)
+    @discord.ui.button(label = "x", style = discord.ButtonStyle.success, row = 2)
     async def Çarpı(self, button, interaction: discord.Interaction):
         self.input_text += "*"; await self.Yazı(interaction)
 
-    @discord.ui.button(label = "Sıfırla", style=discord.ButtonStyle.danger, row = 3)
+    @discord.ui.button(label = "Sıfırla", style = discord.ButtonStyle.danger, row = 3)
     async def Sıfırla(self, button, interaction: discord.Interaction):
         self.input_text = ""; await self.Yazı(interaction)
 
-    @discord.ui.button(label = "0", style=discord.ButtonStyle.primary, row = 3)
+    @discord.ui.button(label = "0", style = discord.ButtonStyle.primary, row = 3)
     async def Sıfır(self, button, interaction: discord.Interaction):
         self.input_text += "0"; await self.Yazı(interaction)
 
-    @discord.ui.button(label = "=", style=discord.ButtonStyle.primary, row = 3)
+    @discord.ui.button(label = "=", style = discord.ButtonStyle.primary, row = 3)
     async def Eşittir(self, button, interaction: discord.Interaction):
         try:
             self.input_text = str(eval(self.input_text))
@@ -216,7 +216,7 @@ class Hesap_Makinesi(discord.ui.View):
             self.input_text = "Mesajınız Anlaşılamadı."
         await self.Yazı(interaction)
 
-    @discord.ui.button(label = "÷", style=discord.ButtonStyle.success, row = 3)
+    @discord.ui.button(label = "÷", style = discord.ButtonStyle.success, row = 3)
     async def Bölü(self, button, interaction: discord.Interaction):
         self.input_text += "/"; await self.Yazı(interaction)
 
@@ -273,24 +273,18 @@ async def Geri_Sayım(message, oyun):
 
 async def Sırayı_Göster(message, oyun):
     harita = Harita_Çiz(oyun)
-
     await Geri_Sayım(message, oyun)
 
     for a in oyun["sıra"]:
         emoji = oyun["renkler"][a]
-        await message.edit(
-            content = f"{harita}\nSıralamayı ezberle: {emoji}",
-            view = None
-        )
+        await message.edit(content = f"{harita}\nSıralamayı ezberle: {emoji}")
         await asyncio.sleep(1)
-
-        await message.edit(content = f"{harita}\n...", view = None)
+        await message.edit(content = f"{harita}\nSıralamayı ezberle:")
         await asyncio.sleep(0.3)
 
 class Renk_Düğmeleri(discord.ui.Button):
     def __init__(self, index, emoji, view):
-        super().__init__(
-            style=discord.ButtonStyle.secondary,emoji=emoji)
+        super().__init__(style = discord.ButtonStyle.secondary,emoji = emoji)
         self.index = index
         self.view_ref = view
 
@@ -299,17 +293,16 @@ class Renk_Düğmeleri(discord.ui.Button):
 
 class Yön_Düğmeleri(discord.ui.Button):
     def __init__(self, emoji, dx, dy, kullanıcı_kimliği):
-        super().__init__(
-            style=discord.ButtonStyle.secondary,emoji=emoji)
+        super().__init__(style = discord.ButtonStyle.secondary, emoji = emoji)
         self.dx = dx
         self.dy = dy
         self.kullanıcı_kimliği = kullanıcı_kimliği
 
     async def callback(self, interaction):
         oyun = Oyunlar[self.kullanıcı_kimliği]
+        await interaction.response.defer()
 
         if not oyun["hareket_hakkı"]:
-            await interaction.response.defer()
             return
 
         nx = oyun["x"] + self.dx
@@ -319,37 +312,41 @@ class Yön_Düğmeleri(discord.ui.Button):
             oyun["x"], oyun["y"] = nx, ny
 
         if (oyun["x"], oyun["y"]) == oyun["çıkış"]:
-            await interaction.response.edit_message(content = f"Kazandın.\n\nPuan: {oyun['puan']}\nDoğru Sayısı: {oyun['doğru']}\nYanlış Sayısı: {oyun['yanlış']}",view = None)
+            await interaction.message.edit(content = f"Kazandın.\n\nPuan: {oyun['puan']}\nDoğru: {oyun['doğru']}\nYanlış: {oyun['yanlış']}", view = None)
             return
 
         oyun["hareket_hakkı"] = False
-
-        await interaction.response.edit_message(content = Harita_Çiz(oyun),view = None)
+        await interaction.message.edit(content = Harita_Çiz(oyun), view = None)
         await asyncio.sleep(0.8)
         await Sırayı_Göster(interaction.message, oyun)
-        await interaction.message.edit(
-            content = Harita_Çiz(oyun),
-            view = Renk_Girme_Düğmeleri(self.kullanıcı_kimliği))
+        await interaction.message.edit(content = f"{Harita_Çiz(oyun)}\nDoğru sıralamayı gir:", view = Renk_Girme_Düğmeleri(self.kullanıcı_kimliği))
 
 class Düğmeler(discord.ui.View):
     def __init__(self, kullanıcı_kimliği):
-        super().__init__(timeout=30)
+        super().__init__(timeout = 30)
         oyun = Oyunlar[kullanıcı_kimliği]
         x, y = oyun["x"], oyun["y"]
         l = oyun["labirent"]
 
         if y > 0 and l[y-1][x] == 0:
             self.add_item(Yön_Düğmeleri("⬆️",0,-1,kullanıcı_kimliği))
+
         if y < len(l)-1 and l[y+1][x] == 0:
             self.add_item(Yön_Düğmeleri("⬇️",0,1,kullanıcı_kimliği))
+
         if x > 0 and l[y][x-1] == 0:
             self.add_item(Yön_Düğmeleri("⬅️",-1,0,kullanıcı_kimliği))
+
         if x < len(l)-1 and l[y][x+1] == 0:
             self.add_item(Yön_Düğmeleri("➡️",1,0,kullanıcı_kimliği))
 
+class Boşluk(discord.ui.View):
+    def __init__(self):
+        super().__init__(timeout = None)
+
 class Renk_Girme_Düğmeleri(discord.ui.View):
     def __init__(self, kullanıcı_kimliği):
-        super().__init__(timeout=60)
+        super().__init__(timeout = 60)
         self.kullanıcı_kimliği = kullanıcı_kimliği
         oyun = Oyunlar[kullanıcı_kimliği]
 
@@ -369,10 +366,10 @@ class Renk_Girme_Düğmeleri(discord.ui.View):
             oyun["yanlış"] += 1
             oyun["giriş"] = []
 
-            await interaction.message.edit(content = Harita_Çiz(oyun) + "\n" + Bilgi_Yazısı(oyun, "Sıralamayı yanlış girdin."),view = None)
+            await interaction.message.edit(content = Harita_Çiz(oyun) + "\nSıralamayı yanlış girdin.", view = Boşluk())
             await asyncio.sleep(3)
             await Sırayı_Göster(interaction.message, oyun)
-            await interaction.message.edit(content = Harita_Çiz(oyun),view = Renk_Girme_Düğmeleri(self.kullanıcı_kimliği))
+            await interaction.message.edit(content = f"{Harita_Çiz(oyun)}\nDoğru sıralamayı gir:", view = Renk_Girme_Düğmeleri(self.kullanıcı_kimliği))
             return
 
         if len(oyun["giriş"]) == len(oyun["sıra"]):
@@ -385,7 +382,8 @@ class Renk_Girme_Düğmeleri(discord.ui.View):
 
             oyun["renkler"] = random.sample(RENKLER, oyun["renk_sayısı"])
             oyun["sıra"] = Sırayı_Güncelle(oyun["renk_sayısı"],len(oyun["sıra"]) + 1)
-            await interaction.message.edit(content = Harita_Çiz(oyun) + "\n" +Bilgi_Yazısı(oyun, "Sıralamayı doğru girdin."),view = None)
+
+            await interaction.message.edit(content = Harita_Çiz(oyun) + "\n" + Bilgi_Yazısı(oyun, "Sıralamayı doğru girdin."), view = Boşluk())
             await asyncio.sleep(3)
             oyun["hareket_hakkı"] = True
-            await interaction.message.edit(content = Harita_Çiz(oyun) + "\nGitmek istediğin yönü seç:", view=Düğmeler(self.kullanıcı_kimliği))
+            await interaction.message.edit(content = Harita_Çiz(oyun) + "\nGitmek istediğin yönü seç:", view = Düğmeler(self.kullanıcı_kimliği))

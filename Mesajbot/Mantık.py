@@ -220,7 +220,7 @@ class Hesap_Makinesi(discord.ui.View):
     async def Bölü(self, button, interaction: discord.Interaction):
         self.input_text += "/"; await self.Yazı(interaction)
 
-def Labirent(boyut=11):
+def Labirent(boyut = 11):
     if boyut % 2 == 0:
         boyut += 1
 
